@@ -1,10 +1,16 @@
-﻿namespace Lab1
+﻿
+namespace Lab1
 {
     public class Student
     {
         private string _name;
         private string _surname;
         private string _mark;
+
+        public Student()
+        {
+            
+        }
 
         public Student(string name, string surname, string mark)
         {

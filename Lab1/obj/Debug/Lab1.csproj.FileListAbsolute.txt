@@ -3,3 +3,8 @@ C:\Users\Aleksey\RiderProjects\LabSaod1\Lab1\bin\Debug\Lab1.exe
 C:\Users\Aleksey\RiderProjects\LabSaod1\Lab1\bin\Debug\Lab1.pdb
 C:\Users\Aleksey\RiderProjects\LabSaod1\Lab1\obj\Debug\Lab1.exe
 C:\Users\Aleksey\RiderProjects\LabSaod1\Lab1\obj\Debug\Lab1.pdb
+C:\Users\Aleksey\RiderProjects\LabSaod2\Lab1\bin\Debug\Lab1.exe
+C:\Users\Aleksey\RiderProjects\LabSaod2\Lab1\bin\Debug\Lab1.pdb
+C:\Users\Aleksey\RiderProjects\LabSaod2\Lab1\obj\Debug\Lab1.csprojAssemblyReference.cache
+C:\Users\Aleksey\RiderProjects\LabSaod2\Lab1\obj\Debug\Lab1.exe
+C:\Users\Aleksey\RiderProjects\LabSaod2\Lab1\obj\Debug\Lab1.pdb
