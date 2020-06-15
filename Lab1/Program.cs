@@ -7,7 +7,8 @@ namespace Lab1
 {
     internal class Program
     {
-        private static MyStaticQueue<Student> myQueue;
+        private static MyStaticQueue<char> myQueue;
+        private static Random random;
 
         public static void Main(string[] args)
         {
@@ -20,7 +21,7 @@ namespace Lab1
                 {
                     if (length > 0)
                     {
-                        myQueue = new MyStaticQueue<Student>(length);
+                        myQueue = new MyStaticQueue<char>(length);
                         break;
                     }
                 }
@@ -28,93 +29,79 @@ namespace Lab1
 
 
             Console.WriteLine("Команды для использования программы:");
-            Console.WriteLine("ADD  добавить объект в очередь");
-            Console.WriteLine("ISFULL  проверка очереди на заполненность");
-            Console.WriteLine("SHOWALL  вывести на экран все объекты");
-            Console.WriteLine("REMOVE  вывести на экран и удалить объект с головы очереди");
-            Console.WriteLine("ISEMPTY  проверка на пустоту очереди");
-            Console.WriteLine("EXT  выход из программы");
+            Console.WriteLine("q  выход из программы");
             Console.WriteLine();
-
+            random = new Random();
+            Console.WriteLine("Инициирован датчик псевдослучайных чисел");
+            
             while (true)
             {
-                var command = Console.ReadLine();
-                if (command.Equals("EXT"))
+                var randomNum = random.Next(1, 101);
+                if (randomNum % 2 == 0)
+                {
+                    AddElements();
+                }
+                else
+                {
+                    DeleteElements();
+                }
+                
+                Console.WriteLine();
+                Console.WriteLine("Закончить выполнение? (для выхода введите q и нажмите Enter, для продолжения нажмите Enter)");
+                var command =  Console.ReadLine();
+                if (command == "q")
                 {
                     myQueue.Dispose();
                     break;
                 }
-                CommandRecognizer(command);
+            }
+        
+        }
+
+        private static void DeleteElements()
+        {
+            var delElements = random.Next(1, 4);
+            Console.WriteLine("Операция: удаление");
+            Console.WriteLine($"Количество удаляемых элементов: {delElements}");
+            for (int i = 0; i < delElements; i++)
+            {
+                var el = myQueue.remove();
+                if (el != '\0')
+                {
+                    Console.WriteLine("Удаленный элемент: " + el);
+                    Console.Write("Состояние очереди после удаления: ");
+                    myQueue.showState();
+                    Console.WriteLine();
+                }
+                else
+                {
+                    Console.WriteLine("Очередь пуста!");
+                    break;
+                }
             }
         }
 
-        private static void CommandRecognizer(string command)
+        private static void AddElements()
         {
-            switch (command)
+            var addElements = random.Next(1, 4);
+            Console.WriteLine("Операция: добавление");
+            Console.WriteLine($"Количество добавляемых элементов: {addElements}");
+            for (int i = 0; i < addElements; i++)
             {
-                case "ADD":
-                    if (myQueue.isFull()) Console.WriteLine("Очередь заполнена");
-                    else
-                    {
-                        Console.WriteLine("Введите имя студента:");
-                        var name = Console.ReadLine();
-                        Console.WriteLine("Введите фамилию студента:");
-                        var surname = Console.ReadLine();
-                        Console.WriteLine("Введите оценку студента:");
-                        var mark = Console.ReadLine();
-                        if (myQueue.offer(new Student(name, surname, mark)))
-                        {
-                            Console.WriteLine("Данные успешно записаны");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Не удалось записать данные");
-                        }
-                    }
-
-                    break;
-                
-                case "SHOWALL":
+                if (myQueue.isFull())
+                {
+                    Console.WriteLine("Очередь заполнена!");
                     myQueue.showState();
                     break;
-                
-                case "REMOVE":
-                    var student = myQueue.remove();
-                    if (student != null)
-                    {
-                        Console.WriteLine(student.Name + " " + student.Surname + " " + student.Mark);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Данные отсутствуют");
-                    }
-                    break;
-                case "ISEMPTY":
-                    if (myQueue.isEmpty())
-                    {
-                        Console.WriteLine("Очередь пуста");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Очередь не пуста");
-                    }
-                    break;
-                case "ISFULL":
-                    if (myQueue.isFull())
-                    {
-                        Console.WriteLine("Очередь заполнена");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Очередь не заполнена");
-                    }
-                    break;
-                default: 
-                    Console.WriteLine("No such command");
-                    break;
+                }
+
+                var charCode = random.Next(65, 91);
+                char sym = (char) charCode;
+                myQueue.offer(sym);
+                myQueue.showState();
+                Console.WriteLine();
             }
-            
         }
-        
+
     }
 }

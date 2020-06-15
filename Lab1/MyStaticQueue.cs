@@ -68,7 +68,7 @@ namespace Lab1
                     current = first;
                     do
                     {
-                        Console.WriteLine(array[current].ToString());
+                        Console.Write("'" + array[current].ToString() + "'");
                         if (current == array.Length - 1)
                         {
                             current = 0;
@@ -87,7 +87,7 @@ namespace Lab1
             }
             else
             {
-                Console.WriteLine("Данные отсутствуют");
+                Console.Write("Данные отсутствуют");
             }
         }
 
