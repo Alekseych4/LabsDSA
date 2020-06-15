@@ -7,7 +7,7 @@ namespace Lab1
 {
     internal class Program
     {
-        private static MyStaticQueue<char> myQueue;
+        private static MyStaticList<char> _myList;
         private static Random random;
 
         public static void Main(string[] args)
@@ -21,7 +21,7 @@ namespace Lab1
                 {
                     if (length > 0)
                     {
-                        myQueue = new MyStaticQueue<char>(length);
+                        _myList = new MyStaticList<char>(length);
                         break;
                     }
                 }
@@ -51,7 +51,7 @@ namespace Lab1
                 var command =  Console.ReadLine();
                 if (command == "q")
                 {
-                    myQueue.Dispose();
+                    _myList.Dispose();
                     break;
                 }
             }
@@ -65,12 +65,12 @@ namespace Lab1
             Console.WriteLine($"Количество удаляемых элементов: {delElements}");
             for (int i = 0; i < delElements; i++)
             {
-                var el = myQueue.remove();
+                var el = _myList.remove();
                 if (el != '\0')
                 {
                     Console.WriteLine("Удаленный элемент: " + el);
                     Console.Write("Состояние очереди после удаления: ");
-                    myQueue.showState();
+                    _myList.showState();
                     Console.WriteLine();
                 }
                 else
@@ -88,17 +88,17 @@ namespace Lab1
             Console.WriteLine($"Количество добавляемых элементов: {addElements}");
             for (int i = 0; i < addElements; i++)
             {
-                if (myQueue.isFull())
+                if (_myList.isFull())
                 {
                     Console.WriteLine("Очередь заполнена!");
-                    myQueue.showState();
+                    _myList.showState();
                     break;
                 }
 
                 var charCode = random.Next(65, 91);
                 char sym = (char) charCode;
-                myQueue.offer(sym);
-                myQueue.showState();
+                _myList.add(sym);
+                _myList.showState();
                 Console.WriteLine();
             }
         }

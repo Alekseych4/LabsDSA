@@ -3,7 +3,7 @@ using System;
 
 namespace Lab1
 {
-    public class MyStaticQueue<T> : IDisposable
+    public class MyStaticList<T> : IDisposable
     {
 
         private int last;
@@ -14,7 +14,7 @@ namespace Lab1
 
         private T[] array;
         
-        public MyStaticQueue(int length)
+        public MyStaticList(int length)
         {
             first = 0;
             last = 0;
@@ -91,7 +91,7 @@ namespace Lab1
             }
         }
 
-        public bool offer(T item)
+        public bool add(T item)
         {
             if (item == null) return false;
             
@@ -137,6 +137,50 @@ namespace Lab1
             }
         }
 
+        public bool addBefore(T item, int beforeElement)
+        {
+            if (isEmpty())
+            {
+                add(item);
+            }
+            else
+            {
+                if (item == null) return false;
+                try
+                {
+                    temp = array[beforeElement];
+                    bool sorted = false;
+                    do
+                    {
+                        //sorted = compareStrings();
+                    } while (!sorted);
+                    
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        
+        //Returns true if this is a place for the element in the sorted list
+        private bool compareStrings(string elementToAdd, string existingElement)
+        {
+            if (existingElement.Length < elementToAdd.Length) return false;
+            if (!existingElement.Equals(elementToAdd))
+            {
+                char[] lettersToAdd = elementToAdd.ToCharArray();
+                char[] existingLetters = existingElement.ToCharArray();
+
+                //int length = lettersToAdd.Length >= existingLetters.Length ? lettersToAdd.Length :  
+            }
+
+            return true;
+        }
+
         public bool isEmpty()
         {
             return first == last;
@@ -147,7 +191,7 @@ namespace Lab1
             return last == -1;
         }
 
-        ~MyStaticQueue()
+        ~MyStaticList()
         {
             while (!isEmpty())
             {
