@@ -7,7 +7,7 @@ namespace Lab1
 {
     internal class Program
     {
-        private static MyStaticQueue<char> myQueue;
+        private static MyDynamicQueue<char> myQueue;
         private static Random random;
 
         public static void Main(string[] args)
@@ -21,7 +21,7 @@ namespace Lab1
                 {
                     if (length > 0)
                     {
-                        myQueue = new MyStaticQueue<char>(length);
+                        myQueue = new MyDynamicQueue<char>(length);
                         break;
                     }
                 }
@@ -88,13 +88,6 @@ namespace Lab1
             Console.WriteLine($"Количество добавляемых элементов: {addElements}");
             for (int i = 0; i < addElements; i++)
             {
-                if (myQueue.isFull())
-                {
-                    Console.WriteLine("Очередь заполнена!");
-                    myQueue.showState();
-                    break;
-                }
-
                 var charCode = random.Next(65, 91);
                 char sym = (char) charCode;
                 myQueue.offer(sym);
