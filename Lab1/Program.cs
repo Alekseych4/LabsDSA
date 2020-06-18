@@ -12,22 +12,22 @@ namespace Lab1
 
         public static void Main(string[] args)
         {
-            do
-            {
-                Console.WriteLine("Задайте длину массива:");
-                Console.WriteLine();
-                var lengthStr = Console.ReadLine();
-                if (int.TryParse(lengthStr, out var length))
-                {
-                    if (length > 0)
-                    {
-                        myQueue = new MyDynamicQueue<char>(length);
-                        break;
-                    }
-                }
-            } while (true);
+            // do
+            // {
+            //     Console.WriteLine("Задайте длину массива:");
+            //     Console.WriteLine();
+            //     var lengthStr = Console.ReadLine();
+            //     if (int.TryParse(lengthStr, out var length))
+            //     {
+            //         if (length > 0)
+            //         {
+            //             myQueue = new MyDynamicQueue<char>(length);
+            //             break;
+            //         }
+            //     }
+            // } while (true);
 
-
+            myQueue = new MyDynamicQueue<char>();
             Console.WriteLine("Команды для использования программы:");
             Console.WriteLine("q  выход из программы");
             Console.WriteLine();

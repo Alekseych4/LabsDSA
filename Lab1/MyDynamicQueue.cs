@@ -10,7 +10,7 @@ namespace Lab1
         private DataStructure<T> first;
         private DataStructure<T> temp;
 
-        public MyDynamicQueue(int length)
+        public MyDynamicQueue()
         {
             first = default;
             last = default;
