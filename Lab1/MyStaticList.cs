@@ -139,21 +139,33 @@ namespace Lab1
 
         public bool addBefore(T item, int beforeElement)
         {
+            if (isFull()) return false;
+            
             if (isEmpty())
             {
-                add(item);
+                return add(item);
             }
             else
             {
                 if (item == null) return false;
                 try
                 {
-                    temp = array[beforeElement];
-                    bool sorted = false;
-                    do
+
+                    if (item is string)
                     {
-                        //sorted = compareStrings();
-                    } while (!sorted);
+                        bool sorted = false;
+                        for (int i = beforeElement; i < array.Length; i++)
+                        {
+                            sorted = compareStrings(item as string, array[i] as string);
+
+                            if (sorted)
+                            {
+                                
+                            }
+
+                        }
+                    }
+                    
                     
                 }
                 catch (Exception e)
@@ -165,7 +177,18 @@ namespace Lab1
 
             return true;
         }
-        
+
+        //use only if array hasn't been filled 
+        private void moveRight(int from)
+        {
+            for (int i = from; i < array.Length - 1; i++)
+            {
+                temp = array[i];
+                array[i] = array[i + 1];
+                array[i + 1] = temp;
+            }
+        }
+
         //Returns true if this is a place for the element in the sorted list
         private bool compareStrings(string elementToAdd, string existingElement)
         {
@@ -175,7 +198,21 @@ namespace Lab1
                 char[] lettersToAdd = elementToAdd.ToCharArray();
                 char[] existingLetters = existingElement.ToCharArray();
 
-                //int length = lettersToAdd.Length >= existingLetters.Length ? lettersToAdd.Length :  
+                for (int i = 0; i < existingLetters.Length; i++)
+                {
+                    if (lettersToAdd[i] == existingLetters[i])
+                    {
+                        if (lettersToAdd.Length == i + 1)
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                
             }
 
             return true;
