@@ -7,7 +7,7 @@ namespace Lab1
 {
     internal class Program
     {
-        private static MyStaticList<char> _myList;
+        private static MyStaticList<string> _myList;
         private static Random random;
 
         public static void Main(string[] args)
@@ -21,7 +21,7 @@ namespace Lab1
                 {
                     if (length > 0)
                     {
-                        _myList = new MyStaticList<char>(length);
+                        _myList = new MyStaticList<string>(length);
                         break;
                     }
                 }
@@ -57,7 +57,7 @@ namespace Lab1
                     if (_myList.isFull()) Console.WriteLine("Список заполнен");
                     else
                     {
-                        var data = int.Parse(Console.ReadLine());
+                        var data = Console.ReadLine();
                         if (_myList.add(data))
                         {
                             Console.WriteLine("Данные успешно записаны");
@@ -76,7 +76,7 @@ namespace Lab1
                     break;
                 
                 case "DEL":
-                    var i = _myList.remove(int.Parse(Console.ReadLine()));
+                    var i = _myList.remove(Console.ReadLine());
                     if (i != -1)
                     {
                         Console.WriteLine($"Удаленный элемент имел индекс {i}");
@@ -87,7 +87,7 @@ namespace Lab1
                     }
                     break;
                 case "GET":
-                    var index = _myList.getItemIndex(int.Parse(Console.ReadLine()));
+                    var index = _myList.getItemIndex(Console.ReadLine());
                     if (index != -1)
                     {
                         Console.WriteLine($"Данный элемент имеет индекс {index}");

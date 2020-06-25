@@ -3,12 +3,8 @@ using System;
 
 namespace Lab1
 {
-    public class MyStaticList<T> : IDisposable
+    public class MyStaticList<T>
     {
-
-        private int last;
-        private int first;
-        private int current;
         private int counter;
         private T temp;
 
@@ -16,47 +12,41 @@ namespace Lab1
         
         public MyStaticList(int length)
         {
-            first = 0;
-            last = 0;
             counter = 0;
             temp = default;
             array = new T[length];
         }
 
-        public T remove()
+        public int remove(T item)
         {
-            if (first != last)
+            if (isEmpty()) return -1;
+            
+            if (item != null)
             {
                 try
                 {
-                    current = first;
-                    temp = array[current];
-                    array[current] = default(T);
-                    
-                    if (first == array.Length - 1)
+                    int itemIndex = findItemIndex(item);
+                    if (itemIndex != counter - 1)
                     {
-                        first = 0;
+                        array[itemIndex] = default;
+                        moveLeft(itemIndex);
+                        counter--;
+                        return itemIndex;
                     }
                     else
                     {
-                        first++;
+                        counter--;
+                        array[itemIndex] = default;
+                        return itemIndex;
                     }
-
-                    if (last == -1)
-                    {
-                        last = current;
-                    }
-
-                    counter--;
-                    return temp;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
-                    return default(T);
+                    return -1;
                 }
             }
-            return default(T);
+            return -1;
         }
 
         public void showState()
@@ -65,20 +55,10 @@ namespace Lab1
             {
                 try
                 {
-                    current = first;
-                    do
+                    for (int i = 0; i < counter; i++)
                     {
-                        Console.Write("'" + array[current].ToString() + "'");
-                        if (current == array.Length - 1)
-                        {
-                            current = 0;
-                        }
-                        else
-                        {
-                            current++;
-                        }
+                        Console.Write($"{array[i]}  ");
                     }
-                    while (current != last && current != first);
                 }
                 catch (Exception e)
                 {
@@ -93,42 +73,13 @@ namespace Lab1
 
         public bool add(T item)
         {
+            if (isFull()) return false;
             if (item == null) return false;
             
             try
             {
-                if (last >= 0)
-                {
-                    array[last] = item;
-                    counter++;
-                    
-                    if (last == array.Length - 1)
-                    {
-                        if (counter != array.Length)
-                        {
-                            last = 0;
-                        }
-                        else
-                        {
-                            last = -1;
-                        }
-                    }
-                    else
-                    {
-                        if (counter != array.Length)
-                        {
-                            last++;
-                        }
-                        else
-                        {
-                            last = -1;
-                        }
-                    }
-
-                    return true;
-                }
-                
-                return false;
+                array[counter++] = item;
+                return true;
             }
             catch (Exception e)
             {
@@ -137,149 +88,101 @@ namespace Lab1
             }
         }
 
-        public bool addBefore(T item, int beforeElement)
+        public int getItemIndex(T item)
         {
-            if (isFull()) return false;
-            
-            if (isEmpty())
+            if (item == null) return -1;
+
+            try
             {
-                return add(item);
+                int elementIndex = findItemIndex(item);
+                return elementIndex;
+
             }
-            else
+            catch (Exception e)
             {
-                if (item == null) return false;
-                try
+                Console.WriteLine(e);
+                return -1;
+            }
+        }
+
+        private int findItemIndex(T item)
+        {
+            if (item is string)
+            {
+                for (int i = 0; i < counter; i++)
                 {
-
-                    if (item is string)
+                    if ((array[i] as string).Equals(item as string))
                     {
-                        bool sorted = false;
-                        for (int i = beforeElement; i < counter; i++)
-                        {
-                            sorted = compareStrings(item as string, array[i] as string);
-
-                            if (sorted)
-                            {
-                                moveRight(i);
-                                array[i] = item;
-                                counter++;
-                                break;
-                            }
-
-                        }
-                        if (!sorted)
-                        {
-                            array[counter++] = item;
-                        }
+                        return i;
                     }
-                    else if (item is int)
-                    {
-                        bool sorted = false;
-                        int item1 = (int)(object) item;
-                        for (int i = beforeElement; i < counter; i++)
-                        {
-                            sorted = compareInts(item1, (int)(object) array[i]);
-
-                            if (sorted)
-                            {
-                                moveRight(i);
-                                array[i] = item;
-                                counter++;
-                                break;
-                            }
-
-                        }
-                        if (!sorted)
-                        {
-                            array[counter++] = item;
-                        }
-                    }
-
-                    return true;
-
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    return false;
                 }
             }
+            else if (item is int)
+            {
+                int itemInt = (int) (object) item;
+                for (int i = 0; i < counter; i++)
+                {
+                    if (itemInt == (int)(object)array[i])
+                    {
+                        return i;
+                    }
+                }
+            }
+
+            return -1;
         }
 
         //use only if array hasn't been filled 
         private void moveRight(int from)
         {
             var start = array[from];
-            for (int i = from; i < array.Length - 1; i++)
+            var t = default(T);
+            for (int i = from; i < counter; i++)
             {
-                temp = array[i + 1];
+                t = array[i + 1];
                 array[i + 1] = start;
-                start = temp;
+                start = t;
             }
         }
 
-        //Returns true if this is a place for the element in the sorted list
-        private bool compareStrings(string elementToAdd, string existingElement)
+        private void moveLeft(int blankSpace)
         {
-            if (string.IsNullOrEmpty(existingElement)) return true;
-            if (existingElement.Length < elementToAdd.Length) return false;
-            if (!existingElement.Equals(elementToAdd))
+            var start = array[counter - 1];
+            var t = default(T);
+            for (int i = counter - 1; i > blankSpace; i--)
             {
-                char[] lettersToAdd = elementToAdd.ToCharArray();
-                char[] existingLetters = existingElement.ToCharArray();
-
-                for (int i = 0; i < existingLetters.Length; i++)
-                {
-                    if (lettersToAdd[i] == existingLetters[i])
-                    {
-                        if (lettersToAdd.Length == i + 1)
-                        {
-                            return true;
-                        }
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                
+                t = array[i - 1];
+                array[i - 1] = start;
+                start = t;
             }
-
-            return true;
-        }
-
-        //Returns true if this is a place for the element in the sorted list
-        private bool compareInts(int elementToAdd, int existingElement)
-        {
-            return elementToAdd <= existingElement;
         }
 
         public bool isEmpty()
         {
-            return first == last;
+            return counter == 0;
         }
 
         public bool isFull()
         {
-            return last == -1;
+            return counter == array.Length;
         }
 
-        ~MyStaticList()
-        {
-            while (!isEmpty())
-            {
-                var element = remove();
-                element = default(T);
-            }
-        }
-
-        public void Dispose()
-        {
-            while (!isEmpty())
-            {
-                var element = remove();
-                element = default(T);
-            }
-        }
+        // ~MyStaticList()
+        // {
+        //     while (!isEmpty())
+        //     {
+        //         var element = remove();
+        //         element = default(T);
+        //     }
+        // }
+        //
+        // public void Dispose()
+        // {
+        //     while (!isEmpty())
+        //     {
+        //         var element = remove();
+        //         element = default(T);
+        //     }
+        // }
     }
 }
