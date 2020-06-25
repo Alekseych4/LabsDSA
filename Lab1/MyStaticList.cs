@@ -154,19 +154,49 @@ namespace Lab1
                     if (item is string)
                     {
                         bool sorted = false;
-                        for (int i = beforeElement; i < array.Length; i++)
+                        for (int i = beforeElement; i < counter; i++)
                         {
                             sorted = compareStrings(item as string, array[i] as string);
 
                             if (sorted)
                             {
-                                
+                                moveRight(i);
+                                array[i] = item;
+                                counter++;
+                                break;
                             }
 
                         }
+                        if (!sorted)
+                        {
+                            array[counter++] = item;
+                        }
                     }
-                    
-                    
+                    else if (item is int)
+                    {
+                        bool sorted = false;
+                        int item1 = (int)(object) item;
+                        for (int i = beforeElement; i < counter; i++)
+                        {
+                            sorted = compareInts(item1, (int)(object) array[i]);
+
+                            if (sorted)
+                            {
+                                moveRight(i);
+                                array[i] = item;
+                                counter++;
+                                break;
+                            }
+
+                        }
+                        if (!sorted)
+                        {
+                            array[counter++] = item;
+                        }
+                    }
+
+                    return true;
+
                 }
                 catch (Exception e)
                 {
@@ -174,24 +204,24 @@ namespace Lab1
                     return false;
                 }
             }
-
-            return true;
         }
 
         //use only if array hasn't been filled 
         private void moveRight(int from)
         {
+            var start = array[from];
             for (int i = from; i < array.Length - 1; i++)
             {
-                temp = array[i];
-                array[i] = array[i + 1];
-                array[i + 1] = temp;
+                temp = array[i + 1];
+                array[i + 1] = start;
+                start = temp;
             }
         }
 
         //Returns true if this is a place for the element in the sorted list
         private bool compareStrings(string elementToAdd, string existingElement)
         {
+            if (string.IsNullOrEmpty(existingElement)) return true;
             if (existingElement.Length < elementToAdd.Length) return false;
             if (!existingElement.Equals(elementToAdd))
             {
@@ -216,6 +246,12 @@ namespace Lab1
             }
 
             return true;
+        }
+
+        //Returns true if this is a place for the element in the sorted list
+        private bool compareInts(int elementToAdd, int existingElement)
+        {
+            return elementToAdd <= existingElement;
         }
 
         public bool isEmpty()
