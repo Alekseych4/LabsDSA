@@ -18,9 +18,9 @@ namespace Lab1
             array = new T[length];
         }
 
-        public T remove(T item)
+        public int remove(T item)
         {
-            if (isEmpty()) return default;
+            if (isEmpty()) return -1;
             
             if (item != null)
             {
@@ -29,25 +29,25 @@ namespace Lab1
                     int itemIndex = findItemIndex(item);
                     if (itemIndex != counter - 1)
                     {
-                        temp = array[itemIndex];
+                        array[itemIndex] = default;
                         moveLeft(itemIndex);
                         counter--;
-                        return temp;
+                        return itemIndex;
                     }
                     else
                     {
                         counter--;
                         array[itemIndex] = default;
-                        return array[itemIndex];
+                        return itemIndex;
                     }
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
-                    return default(T);
+                    return -1;
                 }
             }
-            return default(T);
+            return -1;
         }
 
         public void showState()
@@ -190,7 +190,7 @@ namespace Lab1
         {
             var start = array[from];
             var t = default(T);
-            for (int i = from; i < array.Length - 1; i++)
+            for (int i = from; i < counter; i++)
             {
                 t = array[i + 1];
                 array[i + 1] = start;
@@ -214,27 +214,52 @@ namespace Lab1
         private bool compareStrings(string elementToAdd, string existingElement)
         {
             if (string.IsNullOrEmpty(existingElement)) return true;
-            if (existingElement.Length < elementToAdd.Length) return false;
             if (!existingElement.Equals(elementToAdd))
             {
                 char[] lettersToAdd = elementToAdd.ToCharArray();
                 char[] existingLetters = existingElement.ToCharArray();
 
-                for (int i = 0; i < existingLetters.Length; i++)
+                int length = 0;
+                if (existingLetters.Length <= lettersToAdd.Length)
+                {
+                    length = existingLetters.Length;
+                }
+                else
+                {
+                    length = lettersToAdd.Length;
+                }
+
+                for (int i = 0; i < length; i++)
                 {
                     if (lettersToAdd[i] == existingLetters[i])
                     {
-                        if (lettersToAdd.Length == i + 1)
+                        if (i == length - 1)
                         {
-                            return true;
+                            if (existingLetters.Length >= lettersToAdd.Length)
+                            {
+                                return true;
+                            }
+                            else if (existingLetters.Length < lettersToAdd.Length)
+                            {
+                                return false;
+                            }
                         }
+                        else continue;
+                        
                     }
-                    else
+
+                    if (lettersToAdd[i] < existingLetters[i] && i <= lettersToAdd.Length - 1)
+                    {
+                        return true;
+                    }
+
+                    if (lettersToAdd[i] > existingLetters[i])
                     {
                         return false;
                     }
                 }
-                
+
+                return false;
             }
 
             return true;
