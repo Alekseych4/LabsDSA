@@ -29,6 +29,10 @@ namespace Lab1
 
 
             Console.WriteLine("Команды для использования программы:");
+            Console.WriteLine("ADD  добавление элемента");
+            Console.WriteLine("DEL  удаление элемента");
+            Console.WriteLine("SHOW  состояние списка");
+            Console.WriteLine("GET поиск элемента");
             Console.WriteLine("q  выход из программы");
             Console.WriteLine();
             random = new Random();
@@ -51,7 +55,6 @@ namespace Lab1
                 var command =  Console.ReadLine();
                 if (command == "q")
                 {
-                    _myList.Dispose();
                     break;
                 }
             }
@@ -65,7 +68,7 @@ namespace Lab1
             Console.WriteLine($"Количество удаляемых элементов: {delElements}");
             for (int i = 0; i < delElements; i++)
             {
-                var el = _myList.remove();
+                var el = 'f';
                 if (el != '\0')
                 {
                     Console.WriteLine("Удаленный элемент: " + el);
