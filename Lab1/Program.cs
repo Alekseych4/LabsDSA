@@ -29,6 +29,8 @@ namespace Lab1
 
             Console.WriteLine("Команды для использования программы:");
             Console.WriteLine("ADD  добавление элемента");
+            Console.WriteLine("ADDAFTER  добавление элемента");
+            Console.WriteLine("ADDBEFORE  добавление элемента");
             Console.WriteLine("DEL  удаление элемента");
             Console.WriteLine("SHOW  состояние списка");
             Console.WriteLine("GET поиск элемента");
@@ -67,7 +69,35 @@ namespace Lab1
                             Console.WriteLine("Не удалось записать данные");
                         }
                     }
-
+            
+                    break;
+                case "ADDAFTER":
+                    Console.WriteLine("Введите элемент для добавления:");
+                    var itemToAdd = Console.ReadLine();
+                    Console.WriteLine("Введите элемент, после которого добавить:");
+                    var addAfter = Console.ReadLine();
+                    if (_myList.addAfter(itemToAdd, addAfter))
+                    {
+                        Console.WriteLine("Данные успешно записаны");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Не удалось записать данные");
+                    }
+                    break;
+                case "ADDBEFORE":
+                    Console.WriteLine("Введите элемент для добавления:");
+                    var item = Console.ReadLine();
+                    Console.WriteLine("Введите элемент, перед которым добавить:");
+                    var addBefore = Console.ReadLine();
+                    if (_myList.addBefore(item, addBefore))
+                    {
+                        Console.WriteLine("Данные успешно записаны");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Не удалось записать данные");
+                    }
                     break;
                 
                 case "SHOW":

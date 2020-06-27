@@ -26,6 +26,8 @@ namespace Lab1
                 try
                 {
                     int itemIndex = findItemIndex(item);
+                    if (itemIndex == -1) return -1;
+                    
                     if (itemIndex != counter - 1)
                     {
                         array[itemIndex] = default;
@@ -80,6 +82,57 @@ namespace Lab1
             {
                 array[counter++] = item;
                 return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
+
+        public bool addBefore(T itemToAdd, T beforeItem)
+        {
+            if (isFull()) return false;
+            if (itemToAdd == null || beforeItem == null) return false;
+            if (isEmpty()) return add(itemToAdd);
+
+            try
+            {
+                int beforeIndex = findItemIndex(beforeItem);
+                if (beforeIndex != -1)
+                {
+                    moveRight(beforeIndex);
+                    array[beforeIndex] = itemToAdd;
+                    counter++;
+                    return true;   
+                }
+                return false;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
+
+        public bool addAfter(T itemToAdd, T afterItem)
+        {
+            if (isFull()) return false;
+            if (itemToAdd == null || afterItem == null) return false;
+            if (isEmpty()) return add(itemToAdd);
+
+            try
+            {
+                int afterIndex = findItemIndex(afterItem);
+                if (afterIndex != -1)
+                {
+                    moveRight(afterIndex + 1);
+                    array[afterIndex + 1] = itemToAdd;
+                    counter++;
+                    return true;
+                }
+
+                return false;
             }
             catch (Exception e)
             {
