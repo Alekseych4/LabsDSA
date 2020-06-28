@@ -3,14 +3,14 @@ using System;
 
 namespace Lab1
 {
-    public class MyStaticList<T>
+    public class MyDynamicList<T> : IDisposable
     {
         private int counter;
         private T temp;
 
         private T[] array;
         
-        public MyStaticList(int length)
+        public MyDynamicList(int length)
         {
             counter = 0;
             temp = default;
@@ -220,22 +220,22 @@ namespace Lab1
             return counter == array.Length;
         }
 
-        // ~MyStaticList()
-        // {
-        //     while (!isEmpty())
-        //     {
-        //         var element = remove();
-        //         element = default(T);
-        //     }
-        // }
-        //
-        // public void Dispose()
-        // {
-        //     while (!isEmpty())
-        //     {
-        //         var element = remove();
-        //         element = default(T);
-        //     }
-        // }
+        ~MyDynamicList()
+        {
+            while (!isEmpty())
+            {
+                var element = remove();
+                element = default(T);
+            }
+        }
+        
+        public void Dispose()
+        {
+            while (!isEmpty())
+            {
+                var element = remove();
+                element = default(T);
+            }
+        }
     }
 }

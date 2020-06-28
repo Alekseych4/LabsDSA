@@ -7,7 +7,7 @@ namespace Lab1
 {
     internal class Program
     {
-        private static MyStaticList<string> _myList;
+        private static MyDynamicList<string> _myList;
         private static Random random;
 
         public static void Main(string[] args)
@@ -21,7 +21,7 @@ namespace Lab1
                 {
                     if (length > 0)
                     {
-                        _myList = new MyStaticList<string>(length);
+                        _myList = new MyDynamicList<string>(length);
                         break;
                     }
                 }
