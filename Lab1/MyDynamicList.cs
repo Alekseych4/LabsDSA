@@ -70,25 +70,45 @@ namespace Lab1
 
             try
             {
-                var itemToMove = findItemByName(elementName);
-                temp = itemToMove;
-                if (to.isEmpty())
+                temp = head;
+                DataStructure<T> searchResult = default;
+                //находим элемент для перемещения
+                if (elementName.Equals((temp.Node as Student).Name))
                 {
-                    to.temp = itemToMove;
-                    temp.Node = temp.Next.Node;
-                    temp.Next = temp.Next.Next;
-                    
-                    to.tail.Next = null;
+                    searchResult = temp;
+                    head = head.Next;
                 }
                 else
                 {
-                    to.temp = itemToMove;
-                    to.temp.Node = itemToMove.Node;
-                    to.tail = to.temp;
-                    
-                    temp.Node = temp.Next.Node;
-                    temp.Next = temp.Next.Next;
+                    while (temp.Next != null)
+                    {
+                        var el = temp.Next.Node as Student;
+                        if (el.Name.Equals(elementName))
+                        {
+                            searchResult = temp.Next;
+                            temp.Next = temp.Next.Next;
+                            break;
+                        }
+
+                        temp = temp.Next;
+                    }
                 }
+                //вставляем элемент в другой список
+                if (searchResult == null) return false;
+                
+                to.temp = searchResult;
+                to.temp.Next = default;
+                
+                if (to.isEmpty())
+                {
+                    to.head = to.temp;
+                }
+                else
+                {
+                    to.tail.Next = to.temp;
+                }
+
+                to.tail = to.temp;
 
                 return true;
             }
@@ -184,6 +204,23 @@ namespace Lab1
         }
 
         private DataStructure<T> findItemByName(string name)
+        {
+            temp = head;
+            do
+            {
+                var el = temp.Node as Student;
+                if (el.Name.Equals(name))
+                {
+                    return temp;    
+                }
+
+                temp = temp.Next;
+            } while (temp != null);
+            
+            return default;
+        }
+        
+        private DataStructure<T> findPreviousItem(string name)
         {
             temp = head;
             do
