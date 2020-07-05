@@ -7,35 +7,22 @@ namespace Lab1
 {
     internal class Program
     {
-        private static MyDynamicList<string> _myList;
+        private static MyDynamicList<Student> _myList;
+        private static MyDynamicList<Student> _deletedList;
         private static Random random;
 
         public static void Main(string[] args)
         {
-            do
-            {
-                Console.WriteLine("Задайте длину массива:");
-                Console.WriteLine();
-                var lengthStr = Console.ReadLine();
-                if (int.TryParse(lengthStr, out var length))
-                {
-                    if (length > 0)
-                    {
-                        _myList = new MyDynamicList<string>(length);
-                        break;
-                    }
-                }
-            } while (true);
+            _myList = new MyDynamicList<Student>();
+            _deletedList = new MyDynamicList<Student>();
 
             Console.WriteLine("Команды для использования программы:");
             Console.WriteLine("ADD  добавление элемента");
-            Console.WriteLine("ADDAFTER  добавление элемента");
-            Console.WriteLine("ADDBEFORE  добавление элемента");
+            Console.WriteLine("ADDAFTER  добавление после элемента");
             Console.WriteLine("DEL  удаление элемента");
             Console.WriteLine("SHOW  состояние списка");
-            Console.WriteLine("GET поиск элемента");
             Console.WriteLine("ISEMPTY  пустота");
-            Console.WriteLine("ISFULL  полнота");
+            Console.WriteLine("SHOWDELETED  показать удаленные элементы");
             Console.WriteLine("q  выход из программы");
             Console.WriteLine();
 
@@ -55,28 +42,49 @@ namespace Lab1
         {
             switch (command)
             {
-                case "ADD":
-                    if (_myList.isFull()) Console.WriteLine("Список заполнен");
+                case "SHOWDELETED":
+                    _deletedList.showState();
+                    break;
+                case "DEL":
+                    Console.WriteLine("Введите имя для удаления:");
+                    if (_myList.moveElementTo(_deletedList, Console.ReadLine()))
+                    {
+                        Console.WriteLine("Данные успешно перемещены");
+                    }
                     else
                     {
-                        var data = Console.ReadLine();
-                        if (_myList.add(data))
-                        {
-                            Console.WriteLine("Данные успешно записаны");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Не удалось записать данные");
-                        }
+                        Console.WriteLine("Не удалось записать данные");
                     }
+                    break;
+                case "ADD":
+                    Console.WriteLine("Введите имя студента:");
+                    var name = Console.ReadLine();
+                    Console.WriteLine("Введите фамилию студента:");
+                    var surname = Console.ReadLine();
+                    Console.WriteLine("Введите оценку студента:");
+                    var mark = Console.ReadLine();
+                    if (_myList.add(new Student(){Name = name, Mark = mark, Surname = surname}))
+                    {
+                        Console.WriteLine("Данные успешно записаны");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Не удалось записать данные");
+                    }
+                    
             
                     break;
                 case "ADDAFTER":
                     Console.WriteLine("Введите элемент для добавления:");
-                    var itemToAdd = Console.ReadLine();
-                    Console.WriteLine("Введите элемент, после которого добавить:");
+                    Console.WriteLine("Введите имя студента:");
+                    var name1 = Console.ReadLine();
+                    Console.WriteLine("Введите фамилию студента:");
+                    var surname1 = Console.ReadLine();
+                    Console.WriteLine("Введите оценку студента:");
+                    var mark1 = Console.ReadLine();
+                    Console.WriteLine("Введите имя элемента, после которого добавить:");
                     var addAfter = Console.ReadLine();
-                    if (_myList.addAfter(itemToAdd, addAfter))
+                    if (_myList.addAfter(new Student(){Name = name1, Surname = surname1, Mark = mark1}, addAfter))
                     {
                         Console.WriteLine("Данные успешно записаны");
                     }
@@ -85,49 +93,12 @@ namespace Lab1
                         Console.WriteLine("Не удалось записать данные");
                     }
                     break;
-                case "ADDBEFORE":
-                    Console.WriteLine("Введите элемент для добавления:");
-                    var item = Console.ReadLine();
-                    Console.WriteLine("Введите элемент, перед которым добавить:");
-                    var addBefore = Console.ReadLine();
-                    if (_myList.addBefore(item, addBefore))
-                    {
-                        Console.WriteLine("Данные успешно записаны");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Не удалось записать данные");
-                    }
-                    break;
-                
+
                 case "SHOW":
                     _myList.showState();
                     Console.WriteLine();
                     break;
                 
-                case "DEL":
-                    var i = _myList.remove(Console.ReadLine());
-                    if (i != -1)
-                    {
-                        Console.WriteLine($"Удаленный элемент имел индекс {i}");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Нет такого элемента");
-                    }
-                    break;
-                case "GET":
-                    var index = _myList.getItemIndex(Console.ReadLine());
-                    if (index != -1)
-                    {
-                        Console.WriteLine($"Данный элемент имеет индекс {index}");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Нет такого элемента");
-                    }
-                    
-                    break;
                 case "ISEMPTY":
                     if (_myList.isEmpty())
                     {
@@ -138,16 +109,7 @@ namespace Lab1
                         Console.WriteLine("Список не пуст");
                     }
                     break;
-                case "ISFULL":
-                    if (_myList.isFull())
-                    {
-                        Console.WriteLine("Список заполнен");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Список не заполнен");
-                    }
-                    break;
+                
                 default: 
                     Console.WriteLine("No such command");
                     break;

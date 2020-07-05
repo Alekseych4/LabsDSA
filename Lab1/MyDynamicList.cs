@@ -1,54 +1,103 @@
 ﻿
 using System;
+using System.CodeDom;
 
 namespace Lab1
 {
     public class MyDynamicList<T> : IDisposable
     {
-        private int counter;
-        private T temp;
-
-        private T[] array;
+        private DataStructure<T> temp;
+        private DataStructure<T> tail;
+        private DataStructure<T> head;
         
-        public MyDynamicList(int length)
+        public MyDynamicList()
         {
-            counter = 0;
             temp = default;
-            array = new T[length];
+            tail = default;
+            head = default;
         }
 
-        public int remove(T item)
+        public T remove(string name)
         {
-            if (isEmpty()) return -1;
-            
-            if (item != null)
+            if (isEmpty()) return default;
+            if (string.IsNullOrEmpty(name)) return default;
+
+            try
             {
-                try
+                var dataStructure = findItemByName(name);
+                var obj = dataStructure.Node;
+
+                if (dataStructure.Next != null)
                 {
-                    int itemIndex = findItemIndex(item);
-                    if (itemIndex == -1) return -1;
-                    
-                    if (itemIndex != counter - 1)
-                    {
-                        array[itemIndex] = default;
-                        moveLeft(itemIndex);
-                        counter--;
-                        return itemIndex;
-                    }
-                    else
-                    {
-                        counter--;
-                        array[itemIndex] = default;
-                        return itemIndex;
-                    }
+                    dataStructure.Node = dataStructure.Next.Node;
+                    dataStructure.Next = dataStructure.Next.Next;
                 }
-                catch (Exception e)
+                else
                 {
-                    Console.WriteLine(e);
-                    return -1;
+                    dataStructure.Node = default;
+                    temp = head;
+                    if (temp.Node == null)
+                    {
+                        tail = head;
+                        return obj;
+                    }
+                    do
+                    {
+                        if (temp.Next.Node == null)
+                        {
+                            temp.Next = null;
+                            tail = temp;
+                            break;
+                        }
+
+                        temp = temp.Next;
+                    } while (temp != null);
                 }
+                return obj;
             }
-            return -1;
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return default;
+            }
+
+        }
+
+        public bool moveElementTo(MyDynamicList<T> to, string elementName)
+        {
+            if (isEmpty()) return false;
+            if (to == null) return false;
+
+            try
+            {
+                var itemToMove = findItemByName(elementName);
+                temp = itemToMove;
+                if (to.isEmpty())
+                {
+                    to.temp = itemToMove;
+                    temp.Node = temp.Next.Node;
+                    temp.Next = temp.Next.Next;
+                    
+                    to.tail.Next = null;
+                }
+                else
+                {
+                    to.temp = itemToMove;
+                    to.temp.Node = itemToMove.Node;
+                    to.tail = to.temp;
+                    
+                    temp.Node = temp.Next.Node;
+                    temp.Next = temp.Next.Next;
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+
         }
 
         public void showState()
@@ -57,10 +106,13 @@ namespace Lab1
             {
                 try
                 {
-                    for (int i = 0; i < counter; i++)
+                    temp = head;
+                    do
                     {
-                        Console.Write($"{array[i]}  ");
-                    }
+                        Console.WriteLine(temp.Node.ToString());
+                        
+                        temp = temp.Next;
+                    } while (temp != null);
                 }
                 catch (Exception e)
                 {
@@ -75,12 +127,28 @@ namespace Lab1
 
         public bool add(T item)
         {
-            if (isFull()) return false;
             if (item == null) return false;
             
             try
             {
-                array[counter++] = item;
+                if (tail == null)
+                {
+                    head = new DataStructure<T>()
+                    {
+                        Node = item,
+                        Next = null
+                    };
+                    tail = head;
+                    return true;
+                }
+                
+                temp = new DataStructure<T>()
+                {
+                    Node = item,
+                    Next = null
+                };
+                tail.Next = temp;
+                tail = temp;
                 return true;
             }
             catch (Exception e)
@@ -90,23 +158,23 @@ namespace Lab1
             }
         }
 
-        public bool addBefore(T itemToAdd, T beforeItem)
+        public bool addAfter(T itemToAdd, string name)
         {
-            if (isFull()) return false;
-            if (itemToAdd == null || beforeItem == null) return false;
+            if (itemToAdd == null || name == null) return false;
             if (isEmpty()) return add(itemToAdd);
-
+        
             try
             {
-                int beforeIndex = findItemIndex(beforeItem);
-                if (beforeIndex != -1)
+                var itemFromList = findItemByName(name);
+                if (itemFromList == null) return false;
+                
+                temp = new DataStructure<T>()
                 {
-                    moveRight(beforeIndex);
-                    array[beforeIndex] = itemToAdd;
-                    counter++;
-                    return true;   
-                }
-                return false;
+                    Node = itemToAdd,
+                    Next = itemFromList.Next
+                };
+                itemFromList.Next = temp;
+                return true;
             }
             catch (Exception e)
             {
@@ -115,117 +183,34 @@ namespace Lab1
             }
         }
 
-        public bool addAfter(T itemToAdd, T afterItem)
+        private DataStructure<T> findItemByName(string name)
         {
-            if (isFull()) return false;
-            if (itemToAdd == null || afterItem == null) return false;
-            if (isEmpty()) return add(itemToAdd);
-
-            try
+            temp = head;
+            do
             {
-                int afterIndex = findItemIndex(afterItem);
-                if (afterIndex != -1)
+                var el = temp.Node as Student;
+                if (el.Name.Equals(name))
                 {
-                    moveRight(afterIndex + 1);
-                    array[afterIndex + 1] = itemToAdd;
-                    counter++;
-                    return true;
+                    return temp;    
                 }
 
-                return false;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return false;
-            }
-        }
-
-        public int getItemIndex(T item)
-        {
-            if (item == null) return -1;
-
-            try
-            {
-                int elementIndex = findItemIndex(item);
-                return elementIndex;
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return -1;
-            }
-        }
-
-        private int findItemIndex(T item)
-        {
-            if (item is string)
-            {
-                for (int i = 0; i < counter; i++)
-                {
-                    if ((array[i] as string).Equals(item as string))
-                    {
-                        return i;
-                    }
-                }
-            }
-            else if (item is int)
-            {
-                int itemInt = (int) (object) item;
-                for (int i = 0; i < counter; i++)
-                {
-                    if (itemInt == (int)(object)array[i])
-                    {
-                        return i;
-                    }
-                }
-            }
-
-            return -1;
-        }
-
-        //use only if array hasn't been filled 
-        private void moveRight(int from)
-        {
-            var start = array[from];
-            var t = default(T);
-            for (int i = from; i < counter; i++)
-            {
-                t = array[i + 1];
-                array[i + 1] = start;
-                start = t;
-            }
-        }
-
-        private void moveLeft(int blankSpace)
-        {
-            var start = array[counter - 1];
-            var t = default(T);
-            for (int i = counter - 1; i > blankSpace; i--)
-            {
-                t = array[i - 1];
-                array[i - 1] = start;
-                start = t;
-            }
+                temp = temp.Next;
+            } while (temp != null);
+            
+            return default;
         }
 
         public bool isEmpty()
         {
-            return counter == 0;
-        }
-
-        public bool isFull()
-        {
-            return counter == array.Length;
+            return tail == null;
         }
 
         ~MyDynamicList()
         {
             while (!isEmpty())
             {
-                var element = remove();
-                element = default(T);
+                tail.Node = default;
+                tail = tail.Next;
             }
         }
         
@@ -233,8 +218,8 @@ namespace Lab1
         {
             while (!isEmpty())
             {
-                var element = remove();
-                element = default(T);
+                tail.Node = default;
+                tail = tail.Next;
             }
         }
     }
