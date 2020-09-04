@@ -4,6 +4,13 @@
     {
         private T _node;
         private DataStructure<T> _next;
+        private DataStructure<T> _previous;
+
+        public DataStructure<T> Previous
+        {
+            get => _previous;
+            set => _previous = value;
+        }
 
         public T Node
         {

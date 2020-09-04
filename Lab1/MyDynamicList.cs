@@ -24,35 +24,23 @@ namespace Lab1
 
             try
             {
-                var dataStructure = findItemByName(name);
+                var dataStructure = findByNameFromHead(name);
                 var obj = dataStructure.Node;
 
-                if (dataStructure.Next != null)
+                if (dataStructure == head)
                 {
-                    dataStructure.Node = dataStructure.Next.Node;
-                    dataStructure.Next = dataStructure.Next.Next;
+                    head = dataStructure.Next;
                 }
-                else
-                {
-                    dataStructure.Node = default;
-                    temp = head;
-                    if (temp.Node == null)
-                    {
-                        tail = head;
-                        return obj;
-                    }
-                    do
-                    {
-                        if (temp.Next.Node == null)
-                        {
-                            temp.Next = null;
-                            tail = temp;
-                            break;
-                        }
 
-                        temp = temp.Next;
-                    } while (temp != null);
+                if (dataStructure == tail)
+                {
+                    tail = dataStructure.Previous;
                 }
+
+
+                dataStructure.Previous.Next = dataStructure.Next;
+                dataStructure.Next.Previous = dataStructure.Previous;
+
                 return obj;
             }
             catch (Exception e)
@@ -63,64 +51,7 @@ namespace Lab1
 
         }
 
-        public bool moveElementTo(MyDynamicList<T> to, string elementName)
-        {
-            if (isEmpty()) return false;
-            if (to == null) return false;
-
-            try
-            {
-                temp = head;
-                DataStructure<T> searchResult = default;
-                //находим элемент для перемещения
-                if (elementName.Equals((temp.Node as Student).Name))
-                {
-                    searchResult = temp;
-                    head = head.Next;
-                }
-                else
-                {
-                    while (temp.Next != null)
-                    {
-                        var el = temp.Next.Node as Student;
-                        if (el.Name.Equals(elementName))
-                        {
-                            searchResult = temp.Next;
-                            temp.Next = temp.Next.Next;
-                            break;
-                        }
-
-                        temp = temp.Next;
-                    }
-                }
-                //вставляем элемент в другой список
-                if (searchResult == null) return false;
-                
-                to.temp = searchResult;
-                to.temp.Next = default;
-                
-                if (to.isEmpty())
-                {
-                    to.head = to.temp;
-                }
-                else
-                {
-                    to.tail.Next = to.temp;
-                }
-
-                to.tail = to.temp;
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return false;
-            }
-
-        }
-
-        public void showState()
+        public void showStateFromHead()
         {
             if (!isEmpty())
             {
@@ -132,7 +63,32 @@ namespace Lab1
                         Console.WriteLine(temp.Node.ToString());
                         
                         temp = temp.Next;
-                    } while (temp != null);
+                    } while (temp != head);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Ошибка выполнения запроса");
+                }
+            }
+            else
+            {
+                Console.Write("Данные отсутствуют");
+            }
+        }
+        
+        public void showStateFromTail()
+        {
+            if (!isEmpty())
+            {
+                try
+                {
+                    temp = tail;
+                    do
+                    {
+                        Console.WriteLine(temp.Node.ToString());
+
+                        temp = temp.Previous;
+                    } while (temp != tail);
                 }
                 catch (Exception e)
                 {
@@ -151,12 +107,13 @@ namespace Lab1
             
             try
             {
-                if (tail == null)
+                if (head == null)
                 {
                     head = new DataStructure<T>()
                     {
                         Node = item,
-                        Next = null
+                        Next = head,
+                        Previous = head
                     };
                     tail = head;
                     return true;
@@ -165,10 +122,12 @@ namespace Lab1
                 temp = new DataStructure<T>()
                 {
                     Node = item,
-                    Next = null
+                    Next = head,
+                    Previous = tail
                 };
                 tail.Next = temp;
                 tail = temp;
+                head.Previous = tail;
                 return true;
             }
             catch (Exception e)
@@ -185,15 +144,58 @@ namespace Lab1
         
             try
             {
-                var itemFromList = findItemByName(name);
+                var itemFromList = findByNameFromTail(name);
                 if (itemFromList == null) return false;
                 
                 temp = new DataStructure<T>()
                 {
                     Node = itemToAdd,
-                    Next = itemFromList.Next
+                    Next = itemFromList.Next,
+                    Previous = itemFromList
                 };
+
+                if (itemFromList == tail)
+                {
+                    tail = temp;
+                }
+                
                 itemFromList.Next = temp;
+                temp.Next.Previous = temp;
+                
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
+        
+        public bool addBefore(T itemToAdd, string name)
+        {
+            if (itemToAdd == null || name == null) return false;
+            if (isEmpty()) return add(itemToAdd);
+        
+            try
+            {
+                var itemFromList = findByNameFromHead(name);
+                if (itemFromList == null) return false;
+                
+                temp = new DataStructure<T>()
+                {
+                    Node = itemToAdd,
+                    Next = itemFromList,
+                    Previous = itemFromList.Previous
+                };
+
+                if (itemFromList == head)
+                {
+                    head = temp;
+                }
+
+                itemFromList.Previous = temp;
+                temp.Previous.Next = temp;
+                
                 return true;
             }
             catch (Exception e)
@@ -203,7 +205,7 @@ namespace Lab1
             }
         }
 
-        private DataStructure<T> findItemByName(string name)
+        private DataStructure<T> findByNameFromHead(string name)
         {
             temp = head;
             do
@@ -215,14 +217,14 @@ namespace Lab1
                 }
 
                 temp = temp.Next;
-            } while (temp != null);
+            } while (temp != head);
             
             return default;
         }
         
-        private DataStructure<T> findPreviousItem(string name)
+        private DataStructure<T> findByNameFromTail(string name)
         {
-            temp = head;
+            temp = tail;
             do
             {
                 var el = temp.Node as Student;
@@ -231,15 +233,15 @@ namespace Lab1
                     return temp;    
                 }
 
-                temp = temp.Next;
-            } while (temp != null);
+                temp = temp.Previous;
+            } while (temp != tail);
             
             return default;
         }
 
         public bool isEmpty()
         {
-            return tail == null;
+            return head == null;
         }
 
         ~MyDynamicList()

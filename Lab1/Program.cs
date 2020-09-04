@@ -19,10 +19,11 @@ namespace Lab1
             Console.WriteLine("Команды для использования программы:");
             Console.WriteLine("ADD  добавление элемента");
             Console.WriteLine("ADDAFTER  добавление после элемента");
+            Console.WriteLine("ADDBEFORE  добавление до элемента");
             Console.WriteLine("DEL  удаление элемента");
-            Console.WriteLine("SHOW  состояние списка");
+            Console.WriteLine("SHOWHEAD  состояние списка с головы");
+            Console.WriteLine("SHOWTAIL  состояние списка с конца");
             Console.WriteLine("ISEMPTY  пустота");
-            Console.WriteLine("SHOWDELETED  показать удаленные элементы");
             Console.WriteLine("q  выход из программы");
             Console.WriteLine();
 
@@ -42,18 +43,17 @@ namespace Lab1
         {
             switch (command)
             {
-                case "SHOWDELETED":
-                    _deletedList.showState();
-                    break;
                 case "DEL":
                     Console.WriteLine("Введите имя для удаления:");
-                    if (_myList.moveElementTo(_deletedList, Console.ReadLine()))
+                    var st = _myList.remove(Console.ReadLine());
+                    if (st == null)
                     {
-                        Console.WriteLine("Данные успешно перемещены");
+                        Console.WriteLine("Данные отсутствуют");
                     }
                     else
                     {
-                        Console.WriteLine("Не удалось записать данные");
+                        Console.WriteLine("Данные удалены:");
+                        Console.WriteLine(st.ToString());   
                     }
                     break;
                 case "ADD":
@@ -93,9 +93,34 @@ namespace Lab1
                         Console.WriteLine("Не удалось записать данные");
                     }
                     break;
+                
+                case "ADDBEFORE":
+                    Console.WriteLine("Введите элемент для добавления:");
+                    Console.WriteLine("Введите имя студента:");
+                    var name2 = Console.ReadLine();
+                    Console.WriteLine("Введите фамилию студента:");
+                    var surname2 = Console.ReadLine();
+                    Console.WriteLine("Введите оценку студента:");
+                    var mark2 = Console.ReadLine();
+                    Console.WriteLine("Введите имя элемента, до которого добавить:");
+                    var addAfter2 = Console.ReadLine();
+                    if (_myList.addBefore(new Student(){Name = name2, Surname = surname2, Mark = mark2}, addAfter2))
+                    {
+                        Console.WriteLine("Данные успешно записаны");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Не удалось записать данные");
+                    }
+                    break;
 
-                case "SHOW":
-                    _myList.showState();
+                case "SHOWHEAD":
+                    _myList.showStateFromHead();
+                    Console.WriteLine();
+                    break;
+                
+                case "SHOWTAIL":
+                    _myList.showStateFromTail();
                     Console.WriteLine();
                     break;
                 
