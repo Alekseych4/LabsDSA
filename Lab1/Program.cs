@@ -8,13 +8,10 @@ namespace Lab1
     internal class Program
     {
         private static MyDynamicList<Student> _myList;
-        private static MyDynamicList<Student> _deletedList;
-        private static Random random;
 
         public static void Main(string[] args)
         {
             _myList = new MyDynamicList<Student>();
-            _deletedList = new MyDynamicList<Student>();
 
             Console.WriteLine("Команды для использования программы:");
             Console.WriteLine("ADD  добавление элемента");

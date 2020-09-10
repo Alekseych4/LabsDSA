@@ -45,7 +45,6 @@ namespace Lab1
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
                 return default;
             }
 
