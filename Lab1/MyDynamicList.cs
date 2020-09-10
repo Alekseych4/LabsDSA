@@ -77,6 +77,10 @@ namespace Lab1
                 {
                     searchResult = temp;
                     head = head.Next;
+                    if (temp == tail)
+                    {
+                        tail = head;
+                    }
                 }
                 else
                 {
@@ -86,6 +90,10 @@ namespace Lab1
                         if (el.Name.Equals(elementName))
                         {
                             searchResult = temp.Next;
+                            if (temp.Next == tail)
+                            {
+                                tail = temp;
+                            }
                             temp.Next = temp.Next.Next;
                             break;
                         }
