@@ -43,7 +43,7 @@ namespace Lab1
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    //Console.WriteLine(e);
                     return -1;
                 }
             }
@@ -136,7 +136,7 @@ namespace Lab1
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                //Console.WriteLine(e);
                 return false;
             }
         }
@@ -153,7 +153,7 @@ namespace Lab1
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                //Console.WriteLine(e);
                 return -1;
             }
         }
