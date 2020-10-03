@@ -107,9 +107,9 @@ namespace Lab1
                 
                 case "DEL":
                     var i = _myList.remove(Console.ReadLine());
-                    if (i != -1)
+                    if (i != null)
                     {
-                        Console.WriteLine($"Удаленный элемент имел индекс {i}");
+                        Console.WriteLine("Удаленный элемент: " + i);
                     }
                     else
                     {

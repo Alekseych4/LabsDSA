@@ -6,49 +6,88 @@ namespace Lab1
     public class MyStaticList<T>
     {
         private int counter;
-        private T temp;
+        private int freeCellIndex;
+        private int tail;
+        private int head;
+        private int temp;
 
-        private T[] array;
+        private DataStructure<T>[] array;
         
         public MyStaticList(int length)
         {
             counter = 0;
-            temp = default;
-            array = new T[length];
+            temp = -1;
+            tail = -1;
+            head = -1;
+            freeCellIndex = 0;
+            
+            array = new DataStructure<T>[length];
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = new DataStructure<T>();
+            }
+
+            foreach (var item in array)
+            {
+                item.Next = -1;
+            }
         }
 
-        public int remove(T item)
+        public T remove(T item)
         {
-            if (isEmpty()) return -1;
+            if (isEmpty()) return default;
             
             if (item != null)
             {
                 try
                 {
                     int itemIndex = findItemIndex(item);
-                    if (itemIndex == -1) return -1;
-                    
-                    if (itemIndex != counter - 1)
+                    if (itemIndex == -1) return default;
+
+                    var data = array[itemIndex].Node;
+                    array[itemIndex].Node = default;
+
+                    if (array[itemIndex].Previous != -1)
                     {
-                        array[itemIndex] = default;
-                        moveLeft(itemIndex);
-                        counter--;
-                        return itemIndex;
+                        if (array[itemIndex].Next != -1)
+                        {
+                            array[array[itemIndex].Previous].Next = array[itemIndex].Next;
+                            array[array[itemIndex].Next].Previous = array[itemIndex].Previous;
+                        }
+                        else
+                        {
+                            tail = array[itemIndex].Previous;
+                            array[array[itemIndex].Previous].Next = -1;
+                        }
                     }
                     else
                     {
-                        counter--;
-                        array[itemIndex] = default;
-                        return itemIndex;
+                        if (array[itemIndex].Next != -1)
+                        {
+                            array[array[itemIndex].Next].Previous = -1;
+                            head = array[itemIndex].Next;
+                        }
+                        else
+                        {
+                            tail = -1;
+                            head = -1;
+                        }
                     }
+                    
+                    counter--;
+                    
+                    updateFreeCellIndex();
+
+                    return data;
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
-                    return -1;
+                    Console.WriteLine("Элемент не найден");
+                    return default;
                 }
             }
-            return -1;
+            return default;
         }
 
         public void showState()
@@ -57,10 +96,15 @@ namespace Lab1
             {
                 try
                 {
-                    for (int i = 0; i < counter; i++)
+                    temp = head;
+                    
+                    do
                     {
-                        Console.Write($"{array[i]}  ");
-                    }
+                        Console.WriteLine(array[temp].Node);
+                        temp = array[temp].Next;
+                        
+                    } while (temp != -1);
+                    
                 }
                 catch (Exception e)
                 {
@@ -80,7 +124,29 @@ namespace Lab1
             
             try
             {
-                array[counter++] = item;
+                array[freeCellIndex] = new DataStructure<T>()
+                {
+                    Node = item,
+                    Next = -1,
+                    Previous = tail
+                };
+
+                if (head == -1)
+                {
+                    head = freeCellIndex;
+                }
+
+                if (tail != -1)
+                {
+                    array[tail].Next = freeCellIndex;
+                }
+
+                tail = freeCellIndex;
+
+                counter++;
+                
+                updateFreeCellIndex();
+                
                 return true;
             }
             catch (Exception e)
@@ -99,13 +165,35 @@ namespace Lab1
             try
             {
                 int beforeIndex = findItemIndex(beforeItem);
+
                 if (beforeIndex != -1)
                 {
-                    moveRight(beforeIndex);
-                    array[beforeIndex] = itemToAdd;
+                    array[freeCellIndex] = new DataStructure<T>()
+                    {
+                        Node = itemToAdd,
+                        Next = beforeIndex,
+                        Previous = array[beforeIndex].Previous
+                    };
+
+                    if (array[beforeIndex].Previous != -1)
+                    {
+                        array[array[beforeIndex].Previous].Next = freeCellIndex;
+                    }
+
+                    if (beforeIndex == head)
+                    {
+                        head = freeCellIndex;
+                    }
+                    
+                    array[beforeIndex].Previous = freeCellIndex;
+
                     counter++;
-                    return true;   
+                    
+                    updateFreeCellIndex();
+
+                    return true;
                 }
+                
                 return false;
             }
             catch (Exception e)
@@ -126,9 +214,29 @@ namespace Lab1
                 int afterIndex = findItemIndex(afterItem);
                 if (afterIndex != -1)
                 {
-                    moveRight(afterIndex + 1);
-                    array[afterIndex + 1] = itemToAdd;
+                    array[freeCellIndex] = new DataStructure<T>()
+                    {
+                        Node = itemToAdd,
+                        Next = array[afterIndex].Next,
+                        Previous = afterIndex
+                    };
+
+                    if (array[afterIndex].Next != -1)
+                    {
+                        array[array[afterIndex].Next].Previous = freeCellIndex;
+                    }
+
+                    if (afterIndex == tail)
+                    {
+                        tail = freeCellIndex;
+                    }
+
+                    array[afterIndex].Next = freeCellIndex;
+
                     counter++;
+                    
+                    updateFreeCellIndex();
+                    
                     return true;
                 }
 
@@ -147,67 +255,62 @@ namespace Lab1
 
             try
             {
-                int elementIndex = findItemIndex(item);
-                return elementIndex;
-
+                return findItemIndex(item);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine("Не удалось найти элемент");
                 return -1;
+            }
+        }
+
+        private void updateFreeCellIndex()
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i].Node == null)
+                {
+                    freeCellIndex = i;
+                    return;
+                }
             }
         }
 
         private int findItemIndex(T item)
         {
-            if (item is string)
+            if (item is string && !isEmpty())
             {
-                for (int i = 0; i < counter; i++)
+                temp = head;
+                do
                 {
-                    if ((array[i] as string).Equals(item as string))
+                    if ((array[temp].Node as string).Equals(item as string))
                     {
-                        return i;
+                        return temp;
                     }
-                }
+
+                    temp = array[temp].Next;
+                    
+                } while (temp != -1);
+                
             }
-            else if (item is int)
+            else if (item is int && !isEmpty())
             {
                 int itemInt = (int) (object) item;
-                for (int i = 0; i < counter; i++)
+                temp = head;
+                do
                 {
-                    if (itemInt == (int)(object)array[i])
+                    if ((int)(object) array[temp].Node == itemInt)
                     {
-                        return i;
+                        return temp;
                     }
-                }
+
+                    temp = array[temp].Next;
+                    
+                } while (temp != -1);
+                
             }
 
             return -1;
-        }
-
-        //use only if array hasn't been filled 
-        private void moveRight(int from)
-        {
-            var start = array[from];
-            var t = default(T);
-            for (int i = from; i < counter; i++)
-            {
-                t = array[i + 1];
-                array[i + 1] = start;
-                start = t;
-            }
-        }
-
-        private void moveLeft(int blankSpace)
-        {
-            var start = array[counter - 1];
-            var t = default(T);
-            for (int i = counter - 1; i > blankSpace; i--)
-            {
-                t = array[i - 1];
-                array[i - 1] = start;
-                start = t;
-            }
         }
 
         public bool isEmpty()
