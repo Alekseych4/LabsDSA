@@ -39,6 +39,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataStructure.cs" />
+    <Compile Include="MyStack.cs" />
+    <Compile Include="StackDataStructure.cs" />
     <Compile Include="Student.cs" />
     <Compile Include="MyStaticList.cs" />
     <Compile Include="Program.cs" />

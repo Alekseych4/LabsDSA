@@ -6,10 +6,10 @@ namespace Lab1
     public class MyStaticList<T>
     {
         private int counter;
-        private int freeCellIndex;
         private int tail;
         private int head;
         private int temp;
+        private MyStack<int> freeCells;
 
         private DataStructure<T>[] array;
         
@@ -19,13 +19,15 @@ namespace Lab1
             temp = -1;
             tail = -1;
             head = -1;
-            freeCellIndex = 0;
+            
+            freeCells = new MyStack<int>();
             
             array = new DataStructure<T>[length];
 
             for (int i = 0; i < array.Length; i++)
             {
                 array[i] = new DataStructure<T>();
+                freeCells.push(i);
             }
 
             foreach (var item in array)
@@ -74,10 +76,10 @@ namespace Lab1
                             head = -1;
                         }
                     }
+
+                    freeCells.push(itemIndex);
                     
                     counter--;
-                    
-                    updateFreeCellIndex();
 
                     return data;
                 }
@@ -97,6 +99,8 @@ namespace Lab1
                 try
                 {
                     temp = head;
+                    
+                    freeCells.showState();
                     
                     do
                     {
@@ -124,6 +128,7 @@ namespace Lab1
             
             try
             {
+                var freeCellIndex = freeCells.pop();
                 array[freeCellIndex] = new DataStructure<T>()
                 {
                     Node = item,
@@ -144,9 +149,7 @@ namespace Lab1
                 tail = freeCellIndex;
 
                 counter++;
-                
-                updateFreeCellIndex();
-                
+
                 return true;
             }
             catch (Exception e)
@@ -168,6 +171,8 @@ namespace Lab1
 
                 if (beforeIndex != -1)
                 {
+                    var freeCellIndex = freeCells.pop();
+                    
                     array[freeCellIndex] = new DataStructure<T>()
                     {
                         Node = itemToAdd,
@@ -188,8 +193,6 @@ namespace Lab1
                     array[beforeIndex].Previous = freeCellIndex;
 
                     counter++;
-                    
-                    updateFreeCellIndex();
 
                     return true;
                 }
@@ -214,6 +217,8 @@ namespace Lab1
                 int afterIndex = findItemIndex(afterItem);
                 if (afterIndex != -1)
                 {
+                    var freeCellIndex = freeCells.pop();
+                    
                     array[freeCellIndex] = new DataStructure<T>()
                     {
                         Node = itemToAdd,
@@ -234,9 +239,7 @@ namespace Lab1
                     array[afterIndex].Next = freeCellIndex;
 
                     counter++;
-                    
-                    updateFreeCellIndex();
-                    
+
                     return true;
                 }
 
@@ -261,18 +264,6 @@ namespace Lab1
             {
                 Console.WriteLine("Не удалось найти элемент");
                 return -1;
-            }
-        }
-
-        private void updateFreeCellIndex()
-        {
-            for (int i = 0; i < array.Length; i++)
-            {
-                if (array[i].Node == null)
-                {
-                    freeCellIndex = i;
-                    return;
-                }
             }
         }
 
@@ -320,7 +311,7 @@ namespace Lab1
 
         public bool isFull()
         {
-            return counter == array.Length;
+            return freeCells.isEmpty();
         }
 
         // ~MyStaticList()
