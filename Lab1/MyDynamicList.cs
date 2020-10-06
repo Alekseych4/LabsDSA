@@ -17,14 +17,14 @@ namespace Lab1
             head = default;
         }
 
-        public T remove(string name)
+        public T remove(T itemToFind)
         {
             if (isEmpty()) return default;
-            if (string.IsNullOrEmpty(name)) return default;
+            if (itemToFind == null) return default;
 
             try
             {
-                var dataStructure = findByNameFromHead(name);
+                var dataStructure = findItemFromHead(itemToFind);
                 var obj = dataStructure.Node;
 
                 if (dataStructure == head)
@@ -136,14 +136,14 @@ namespace Lab1
             }
         }
 
-        public bool addAfter(T itemToAdd, string name)
+        public bool addAfter(T itemToAdd, T itemToFind)
         {
-            if (itemToAdd == null || name == null) return false;
+            if (itemToAdd == null || itemToFind == null) return false;
             if (isEmpty()) return add(itemToAdd);
         
             try
             {
-                var itemFromList = findByNameFromTail(name);
+                var itemFromList = findItemFromTail(itemToFind);
                 if (itemFromList == null) return false;
                 
                 temp = new DataStructure<T>()
@@ -170,14 +170,14 @@ namespace Lab1
             }
         }
         
-        public bool addBefore(T itemToAdd, string name)
+        public bool addBefore(T itemToAdd, T itemToFind)
         {
-            if (itemToAdd == null || name == null) return false;
+            if (itemToAdd == null || itemToFind == null) return false;
             if (isEmpty()) return add(itemToAdd);
         
             try
             {
-                var itemFromList = findByNameFromHead(name);
+                var itemFromList = findItemFromHead(itemToFind);
                 if (itemFromList == null) return false;
                 
                 temp = new DataStructure<T>()
@@ -204,13 +204,43 @@ namespace Lab1
             }
         }
 
-        private DataStructure<T> findByNameFromHead(string name)
+        public T getItemFromHead(T itemToFind)
+        {
+            if (isEmpty()) return default;
+            if (itemToFind == null) return default;
+
+            var item = findItemFromHead(itemToFind);
+
+            if (item != null)
+            {
+                return item.Node;
+            }
+
+            return default;
+        }
+
+        public T getItemFromTail(T itemToFind)
+        {
+            if (isEmpty()) return default;
+            if (itemToFind == null) return default;
+
+            var item = findItemFromTail(itemToFind);
+            
+            if (item != null)
+            {
+                return item.Node;
+            }
+
+            return default;
+        }
+
+        private DataStructure<T> findItemFromHead(T itemToFind)
         {
             temp = head;
             do
             {
-                var el = temp.Node as Student;
-                if (el.Name.Equals(name))
+                var el = temp.Node;
+                if (el.Equals(itemToFind))
                 {
                     return temp;    
                 }
@@ -221,13 +251,13 @@ namespace Lab1
             return default;
         }
         
-        private DataStructure<T> findByNameFromTail(string name)
+        private DataStructure<T> findItemFromTail(T itemToFind)
         {
             temp = tail;
             do
             {
-                var el = temp.Node as Student;
-                if (el.Name.Equals(name))
+                var el = temp.Node;
+                if (el.Equals(itemToFind))
                 {
                     return temp;    
                 }

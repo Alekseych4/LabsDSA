@@ -20,6 +20,8 @@ namespace Lab1
             Console.WriteLine("DEL  удаление элемента");
             Console.WriteLine("SHOWHEAD  состояние списка с головы");
             Console.WriteLine("SHOWTAIL  состояние списка с конца");
+            Console.WriteLine("GETHEAD  найти элемент с начала списка");
+            Console.WriteLine("GETTAIL  найти элемент с конца списка");
             Console.WriteLine("ISEMPTY  пустота");
             Console.WriteLine("q  выход из программы");
             Console.WriteLine();
@@ -42,7 +44,8 @@ namespace Lab1
             {
                 case "DEL":
                     Console.WriteLine("Введите имя для удаления:");
-                    var st = _myList.remove(Console.ReadLine());
+                    var stToDelete = Console.ReadLine();
+                    var st = _myList.remove(new Student(stToDelete, null, null));
                     if (st == null)
                     {
                         Console.WriteLine("Данные отсутствуют");
@@ -81,7 +84,8 @@ namespace Lab1
                     var mark1 = Console.ReadLine();
                     Console.WriteLine("Введите имя элемента, после которого добавить:");
                     var addAfter = Console.ReadLine();
-                    if (_myList.addAfter(new Student(){Name = name1, Surname = surname1, Mark = mark1}, addAfter))
+                    if (_myList.addAfter(new Student(){Name = name1, Surname = surname1, Mark = mark1}, 
+                        new Student(addAfter, null, null)))
                     {
                         Console.WriteLine("Данные успешно записаны");
                     }
@@ -101,7 +105,8 @@ namespace Lab1
                     var mark2 = Console.ReadLine();
                     Console.WriteLine("Введите имя элемента, до которого добавить:");
                     var addAfter2 = Console.ReadLine();
-                    if (_myList.addBefore(new Student(){Name = name2, Surname = surname2, Mark = mark2}, addAfter2))
+                    if (_myList.addBefore(new Student(){Name = name2, Surname = surname2, Mark = mark2}, 
+                        new Student(addAfter2, null, null)))
                     {
                         Console.WriteLine("Данные успешно записаны");
                     }
@@ -119,6 +124,36 @@ namespace Lab1
                 case "SHOWTAIL":
                     _myList.showStateFromTail();
                     Console.WriteLine();
+                    break;
+                
+                case "GETTAIL":
+                    Console.WriteLine("Введите имя для поиска:");
+                    var stGetTail = Console.ReadLine();
+                    var stGot = _myList.getItemFromTail(new Student(stGetTail, null, null));
+                    if (stGot == null)
+                    {
+                        Console.WriteLine("Данные отсутствуют");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Найденный элемент:");
+                        Console.WriteLine(stGot.ToString());   
+                    }
+                    break;
+                
+                case "GETHEAD":
+                    Console.WriteLine("Введите имя для поиска:");
+                    var stGetHead = Console.ReadLine();
+                    var stGot1 = _myList.getItemFromHead(new Student(stGetHead, null, null));
+                    if (stGot1 == null)
+                    {
+                        Console.WriteLine("Данные отсутствуют");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Найденный элемент:");
+                        Console.WriteLine(stGot1.ToString());   
+                    }
                     break;
                 
                 case "ISEMPTY":

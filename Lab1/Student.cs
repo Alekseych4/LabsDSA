@@ -41,5 +41,15 @@ namespace Lab1
         {
             return Name + " " + Surname + " " + Mark;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj != null)
+            {
+                return Name.Equals(((Student) obj).Name);
+            }
+
+            return false;
+        }
     }
 }
