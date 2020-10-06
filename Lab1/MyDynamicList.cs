@@ -17,14 +17,14 @@ namespace Lab1
             head = default;
         }
 
-        public T remove(string name)
+        public T remove(T itemToRemove)
         {
             if (isEmpty()) return default;
-            if (string.IsNullOrEmpty(name)) return default;
+            if (itemToRemove == null) return default;
 
             try
             {
-                var dataStructure = findItemByName(name);
+                var dataStructure = findItemByName(itemToRemove);
                 var obj = dataStructure.Node;
 
                 if (dataStructure.Next != null)
@@ -186,14 +186,14 @@ namespace Lab1
             }
         }
 
-        public bool addAfter(T itemToAdd, string name)
+        public bool addAfter(T itemToAdd, T itemToFind)
         {
-            if (itemToAdd == null || name == null) return false;
+            if (itemToAdd == null || itemToFind == null) return false;
             if (isEmpty()) return add(itemToAdd);
         
             try
             {
-                var itemFromList = findItemByName(name);
+                var itemFromList = findItemByName(itemToFind);
                 if (itemFromList == null) return false;
                 
                 temp = new DataStructure<T>()
@@ -211,13 +211,52 @@ namespace Lab1
             }
         }
 
-        private DataStructure<T> findItemByName(string name)
+        public bool addBefore(T itemToAdd, T itemToFind)
+        {
+            if (itemToAdd == null || itemToFind == null) return false;
+            if (isEmpty()) return add(itemToAdd);
+            
+            try
+            {
+                //itemFromList   (itemToAdd)   itemToFind
+                var itemFromList = findPreviousItem(itemToFind);
+                if (itemFromList == null) return false;
+                
+                if (itemFromList.Node == null && itemFromList.Next == null)
+                {
+                    temp = itemFromList;
+                    temp.Node = itemToAdd;
+                    temp.Next = head;
+
+                    head = temp;
+                }
+                else
+                {
+                    temp = new DataStructure<T>()
+                    {
+                        Node = itemToAdd,
+                        Next = itemFromList.Next
+                    };
+                    
+                    itemFromList.Next = temp;
+                }
+                
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
+
+        private DataStructure<T> findItemByName(T itemToFind)
         {
             temp = head;
             do
             {
-                var el = temp.Node as Student;
-                if (el.Name.Equals(name))
+                var el = temp.Node;
+                if (el.Equals(itemToFind))
                 {
                     return temp;    
                 }
@@ -228,19 +267,28 @@ namespace Lab1
             return default;
         }
         
-        private DataStructure<T> findPreviousItem(string name)
+        private DataStructure<T> findPreviousItem(T itemToFind)
         {
-            temp = head;
-            do
+            if (head.Node.Equals(itemToFind))
             {
-                var el = temp.Node as Student;
-                if (el.Name.Equals(name))
+                return new DataStructure<T>()
+                {
+                    Node = default,
+                    Next = null
+                };
+            }
+            
+            temp = head;
+            while (temp.Next != null)
+            {
+                var el = temp.Next.Node;
+                if (el.Equals(itemToFind))
                 {
                     return temp;    
                 }
 
                 temp = temp.Next;
-            } while (temp != null);
+            } 
             
             return default;
         }

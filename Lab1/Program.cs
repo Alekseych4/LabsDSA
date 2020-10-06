@@ -19,6 +19,7 @@ namespace Lab1
             Console.WriteLine("Команды для использования программы:");
             Console.WriteLine("ADD  добавление элемента");
             Console.WriteLine("ADDAFTER  добавление после элемента");
+            Console.WriteLine("ADDBEFORE  добавление до элемента");
             Console.WriteLine("DEL  удаление элемента");
             Console.WriteLine("SHOW  состояние списка");
             Console.WriteLine("ISEMPTY  пустота");
@@ -84,7 +85,29 @@ namespace Lab1
                     var mark1 = Console.ReadLine();
                     Console.WriteLine("Введите имя элемента, после которого добавить:");
                     var addAfter = Console.ReadLine();
-                    if (_myList.addAfter(new Student(){Name = name1, Surname = surname1, Mark = mark1}, addAfter))
+                    if (_myList.addAfter(new Student(){Name = name1, Surname = surname1, Mark = mark1}, 
+                        new Student(addAfter, null, null)))
+                    {
+                        Console.WriteLine("Данные успешно записаны");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Не удалось записать данные");
+                    }
+                    break;
+                
+                case "ADDBEFORE":
+                    Console.WriteLine("Введите элемент для добавления:");
+                    Console.WriteLine("Введите имя студента:");
+                    var name2 = Console.ReadLine();
+                    Console.WriteLine("Введите фамилию студента:");
+                    var surname2 = Console.ReadLine();
+                    Console.WriteLine("Введите оценку студента:");
+                    var mark2 = Console.ReadLine();
+                    Console.WriteLine("Введите имя элемента, до которого добавить:");
+                    var addBefore = Console.ReadLine();
+                    if (_myList.addBefore(new Student(){Name = name2, Surname = surname2, Mark = mark2}, 
+                        new Student(addBefore, null, null)))
                     {
                         Console.WriteLine("Данные успешно записаны");
                     }
