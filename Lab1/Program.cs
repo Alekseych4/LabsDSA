@@ -48,7 +48,8 @@ namespace Lab1
                     break;
                 case "DEL":
                     Console.WriteLine("Введите имя для удаления:");
-                    if (_myList.moveElementTo(_deletedList, Console.ReadLine()))
+                    var nameToDelete = Console.ReadLine();
+                    if (_myList.moveElementTo(_deletedList, new Student(nameToDelete, null, null)))
                     {
                         Console.WriteLine("Данные успешно перемещены");
                     }

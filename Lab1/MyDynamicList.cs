@@ -63,19 +63,22 @@ namespace Lab1
 
         }
 
-        public bool moveElementTo(MyDynamicList<T> to, string elementName)
+        public bool moveElementTo(MyDynamicList<T> to, T elementToMove)
         {
             if (isEmpty()) return false;
             if (to == null) return false;
+            if (elementToMove == null) return false;
 
             try
             {
-                temp = head;
-                DataStructure<T> searchResult = default;
                 //находим элемент для перемещения
-                if (elementName.Equals((temp.Node as Student).Name))
+                var searchResult = findPreviousItem(elementToMove);
+
+                if (searchResult == null) return false;
+
+                if (searchResult.Next == null && searchResult.Node == null)
                 {
-                    searchResult = temp;
+                    searchResult = head;
                     head = head.Next;
                     if (temp == tail)
                     {
@@ -84,26 +87,17 @@ namespace Lab1
                 }
                 else
                 {
-                    while (temp.Next != null)
+                    temp = searchResult;
+                    searchResult = searchResult.Next;
+                    if (temp.Next == tail)
                     {
-                        var el = temp.Next.Node as Student;
-                        if (el.Name.Equals(elementName))
-                        {
-                            searchResult = temp.Next;
-                            if (temp.Next == tail)
-                            {
-                                tail = temp;
-                            }
-                            temp.Next = temp.Next.Next;
-                            break;
-                        }
-
-                        temp = temp.Next;
+                        tail = temp;
                     }
+
+                    temp.Next = temp.Next.Next;
                 }
-                //вставляем элемент в другой список
-                if (searchResult == null) return false;
                 
+                //вставляем элемент в другой список
                 to.temp = searchResult;
                 to.temp.Next = default;
                 
