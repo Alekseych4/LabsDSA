@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.CodeDom;
+using System.Text;
 
 namespace Lab1
 {
@@ -9,12 +10,23 @@ namespace Lab1
         private DataStructure<T> temp;
         private DataStructure<T> tail;
         private DataStructure<T> head;
-        
+        private string _tag;
+
+        public string Tag => _tag;
+
         public MyDynamicList()
         {
             temp = default;
             tail = default;
             head = default;
+        }
+        
+        public MyDynamicList(string tag)
+        {
+            temp = default;
+            tail = default;
+            head = default;
+            this._tag = tag;
         }
 
         public T remove(T itemToRemove)
@@ -25,6 +37,8 @@ namespace Lab1
             try
             {
                 var dataStructure = findItemByName(itemToRemove);
+                itemToRemove = default;
+
                 var obj = dataStructure.Node;
 
                 if (dataStructure.Next != null)
@@ -63,65 +77,6 @@ namespace Lab1
 
         }
 
-        public bool moveElementTo(MyDynamicList<T> to, T elementToMove)
-        {
-            if (isEmpty()) return false;
-            if (to == null) return false;
-            if (elementToMove == null) return false;
-
-            try
-            {
-                //находим элемент для перемещения
-                var searchResult = findPreviousItem(elementToMove);
-
-                if (searchResult == null) return false;
-
-                if (searchResult.Next == null && searchResult.Node == null)
-                {
-                    searchResult = head;
-                    head = head.Next;
-                    if (temp == tail)
-                    {
-                        tail = head;
-                    }
-                }
-                else
-                {
-                    temp = searchResult;
-                    searchResult = searchResult.Next;
-                    if (temp.Next == tail)
-                    {
-                        tail = temp;
-                    }
-
-                    temp.Next = temp.Next.Next;
-                }
-                
-                //вставляем элемент в другой список
-                to.temp = searchResult;
-                to.temp.Next = default;
-                
-                if (to.isEmpty())
-                {
-                    to.head = to.temp;
-                }
-                else
-                {
-                    to.tail.Next = to.temp;
-                }
-
-                to.tail = to.temp;
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return false;
-            }
-
-        }
-
         public void showState()
         {
             if (!isEmpty())
@@ -138,6 +93,7 @@ namespace Lab1
                 }
                 catch (Exception e)
                 {
+                    //Console.WriteLine(e);
                     Console.WriteLine("Ошибка выполнения запроса");
                 }
             }
@@ -188,6 +144,7 @@ namespace Lab1
             try
             {
                 var itemFromList = findItemByName(itemToFind);
+                itemToFind = default;
                 if (itemFromList == null) return false;
                 
                 temp = new DataStructure<T>()
@@ -214,6 +171,7 @@ namespace Lab1
             {
                 //itemFromList   (itemToAdd)   itemToFind
                 var itemFromList = findPreviousItem(itemToFind);
+                itemToFind = default;
                 if (itemFromList == null) return false;
                 
                 if (itemFromList.Node == null && itemFromList.Next == null)
@@ -242,6 +200,17 @@ namespace Lab1
                 Console.WriteLine(e);
                 return false;
             }
+        }
+
+        public T getItem(T itemToFind)
+        {
+            var result = findItemByName(itemToFind);
+            if (result != null)
+            {
+                return result.Node;
+            }
+
+            return default;
         }
 
         private DataStructure<T> findItemByName(T itemToFind)
@@ -290,6 +259,56 @@ namespace Lab1
         public bool isEmpty()
         {
             return tail == null;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+            if (obj.GetType().Equals(this.GetType()))
+            {
+                if (this.Tag != null && ((MyDynamicList<T>) obj).Tag != null)
+                {
+                    return this.Tag.Equals(((MyDynamicList<T>) obj).Tag);
+                }
+            }
+
+            return false;
+        }
+
+        public override string ToString()
+        {
+            if (!isEmpty())
+            {
+                try
+                {
+                    StringBuilder output = new StringBuilder();
+                    temp = head;
+                    do
+                    {
+                        if (temp == head)
+                        {
+                            output.Append($"| Tag: {Tag} |  Items:  ");
+                        }
+                        output.Append(temp.Node);
+                        output.Append("  |  ");
+                        
+                        temp = temp.Next;
+                    } while (temp != null);
+
+                    return output.ToString();
+                }
+                catch (Exception e)
+                {
+                    return "Ошибка выполнения запроса";
+                }
+            }
+
+            if (Tag != null)
+            {
+                return Tag;
+            }
+
+            return "Данные отсутствуют";
         }
 
         ~MyDynamicList()
