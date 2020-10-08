@@ -110,10 +110,10 @@ namespace Lab1
                 {
                     head = new DataStructure<T>()
                     {
-                        Node = item,
-                        Next = head,
-                        Previous = head
+                        Node = item
                     };
+                    head.Next = head;
+                    head.Previous = head;
                     tail = head;
                     return true;
                 }
