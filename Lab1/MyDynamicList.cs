@@ -83,7 +83,14 @@ namespace Lab1
             {
                 try
                 {
+                    Console.WriteLine(object.ReferenceEquals(head, null));
+                    var t = head;
+                    Console.WriteLine(object.ReferenceEquals(t, null));
+                    Console.WriteLine(object.ReferenceEquals(t, head));
+                    Console.WriteLine(object.ReferenceEquals(temp, null));
                     temp = head;
+                    Console.WriteLine(object.ReferenceEquals(temp, null));
+                    Console.WriteLine(object.ReferenceEquals(temp, head));
                     do
                     {
                         Console.WriteLine(temp.Node.ToString());
