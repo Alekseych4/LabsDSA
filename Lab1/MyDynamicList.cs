@@ -83,14 +83,7 @@ namespace Lab1
             {
                 try
                 {
-                    Console.WriteLine(object.ReferenceEquals(head, null));
-                    var t = head;
-                    Console.WriteLine(object.ReferenceEquals(t, null));
-                    Console.WriteLine(object.ReferenceEquals(t, head));
-                    Console.WriteLine(object.ReferenceEquals(temp, null));
                     temp = head;
-                    Console.WriteLine(object.ReferenceEquals(temp, null));
-                    Console.WriteLine(object.ReferenceEquals(temp, head));
                     do
                     {
                         Console.WriteLine(temp.Node.ToString());
@@ -211,10 +204,13 @@ namespace Lab1
 
         public T getItem(T itemToFind)
         {
-            var result = findItemByName(itemToFind);
-            if (result != null)
+            if (!isEmpty() && itemToFind != null)
             {
-                return result.Node;
+                var result = findItemByName(itemToFind);
+                if (result != null)
+                {
+                    return result.Node;
+                }
             }
 
             return default;
@@ -312,7 +308,7 @@ namespace Lab1
 
             if (Tag != null)
             {
-                return Tag;
+                return $"| Tag: {Tag} |  Items:  ";
             }
 
             return "Данные отсутствуют";
