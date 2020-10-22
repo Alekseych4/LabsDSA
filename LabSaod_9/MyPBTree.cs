@@ -16,14 +16,17 @@ namespace LabSaod_9
 
         public bool add(T[] elements)
         {
-            int leftHalf = nodesAmount / 2;
-            int rightHalf = nodesAmount - leftHalf;
+            if (elements.Length != nodesAmount)
+            {
+                return false;
+            }
+            
             elementsToAdd = elements;
             
             int count = nodesAmount;
             nodesAmount--;
 
-            root = addNodes(leftHalf, rightHalf);
+            root = addNodes(count);
             
             nodesAmount = count;
 
@@ -35,37 +38,63 @@ namespace LabSaod_9
             return false;
         }
 
-        private DataStructure<T> addNodes(int leftHalf, int rightHalf)
+        private DataStructure<T> addNodes(int amount)
         {
             
-            if (leftHalf == 0 && rightHalf == 0)
+            if (amount == 0)
             {
                 return default;
             }
 
-            DataStructure<T> current = default;
+            DataStructure<T> current = new DataStructure<T>(){Node = elementsToAdd[nodesAmount--]};
+
+            amount--;
+
+            var leftHalf = amount / 2;
+            var rightHalf = amount - leftHalf;
+
             if (leftHalf > 0)
             {
-                current = new DataStructure<T>(){Node = elementsToAdd[nodesAmount--]};
-                
-                int subLeftHalf = leftHalf / 2;
-                int subRightHalf = leftHalf - 1 - subLeftHalf;
-                
-                var nextLeft = addNodes(subLeftHalf, subRightHalf);
+                var nextLeft = addNodes(leftHalf);
                 current.LeftDesc = nextLeft;
             }
             if(rightHalf > 0)
             {
-                current = new DataStructure<T>(){Node = elementsToAdd[nodesAmount--]};
-                
-                int subLeftHalf = rightHalf / 2;
-                int subRightHalf = rightHalf - 1 - subLeftHalf;
-                
-                var nextRight = addNodes(subLeftHalf, subRightHalf);
+                var nextRight = addNodes(rightHalf);
                 current.RightDesc = nextRight;
             }
 
             return current;
+        }
+
+        public void printDirectTraversal()
+        {
+            if (root == null)
+            {
+                Console.WriteLine("Дерево пустое");
+                return;
+            }
+            
+            directTraversal(root, 0);
+        }
+
+        private void directTraversal(DataStructure<T> el, int level)
+        {
+            for (int i = 0; i < level; i++)
+            {
+                Console.Write("     ");
+            }
+            Console.WriteLine(el.Node.ToString());
+            
+            if (el.LeftDesc != null)
+            {
+                directTraversal(el.LeftDesc, level + 1);
+            }
+
+            if (el.RightDesc != null)
+            {
+                directTraversal(el.RightDesc, level + 1);
+            }
         }
     }
 }

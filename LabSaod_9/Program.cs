@@ -25,6 +25,7 @@ namespace LabSaod_9
             
             Console.WriteLine("Команды для использования программы:");
             Console.WriteLine("ADD  добавить элементы в ИСД");
+            Console.WriteLine("DPRINT   обход в прямом порядке");
 
             while (true)
             {
@@ -50,6 +51,10 @@ namespace LabSaod_9
                     {
                         Console.WriteLine("Дерево уже построено, либо произошла ошибка");
                     }
+                    break;
+                
+                case "DPRINT":
+                    _myPbTree.printDirectTraversal();
                     break;
             }
         }
