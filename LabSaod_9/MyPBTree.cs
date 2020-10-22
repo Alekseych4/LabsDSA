@@ -67,7 +67,7 @@ namespace LabSaod_9
             return current;
         }
 
-        public void printDirectTraversal()
+        public void printPreorderTraversal()
         {
             if (root == null)
             {
@@ -75,26 +75,91 @@ namespace LabSaod_9
                 return;
             }
             
-            directTraversal(root, 0);
+            preorderTraversal(root, 0);
         }
 
-        private void directTraversal(DataStructure<T> el, int level)
+        private void preorderTraversal(DataStructure<T> el, int level)
         {
-            for (int i = 0; i < level; i++)
-            {
-                Console.Write("     ");
-            }
+            printIndent(level);
             Console.WriteLine(el.Node.ToString());
             
             if (el.LeftDesc != null)
             {
-                directTraversal(el.LeftDesc, level + 1);
+                preorderTraversal(el.LeftDesc, level + 1);
             }
 
             if (el.RightDesc != null)
             {
-                directTraversal(el.RightDesc, level + 1);
+                preorderTraversal(el.RightDesc, level + 1);
             }
+        }
+
+        public void printInorderTraversal()
+        {
+            if (root == null)
+            {
+                Console.WriteLine("Дерево пустое");
+                return;
+            }
+            
+            inorderTraversal(root, 0);
+        }
+
+        private void inorderTraversal(DataStructure<T> el, int level)
+        {
+            if (el.LeftDesc != null)
+            {
+                inorderTraversal(el.LeftDesc, level + 1);
+            }
+            
+            printIndent(level);
+            Console.WriteLine(el.Node);
+            
+            
+            if (el.RightDesc != null)
+            {
+                inorderTraversal(el.RightDesc, level + 1);
+            }
+
+        }
+
+        public void printReversedInorderTraversal()
+        {
+            if (root == null)
+            {
+                Console.WriteLine("Дерево пустое");
+                return;
+            }
+            reversedInorderTraversal(root, 0);
+        }
+
+        private void reversedInorderTraversal(DataStructure<T> el, int level)
+        {
+            if (el.RightDesc != null)
+            {
+                reversedInorderTraversal(el.RightDesc, level + 1);
+            }
+            
+            printIndent(level);
+            Console.WriteLine(el.Node);
+            
+            if (el.LeftDesc != null)
+            {
+                reversedInorderTraversal(el.LeftDesc, level + 1);
+            }
+        }
+
+        private void printIndent(int indent)
+        {
+            for (int i = 0; i < indent; i++)
+            {
+                Console.Write("     ");
+            }
+        }
+
+        public int getSize()
+        {
+            return nodesAmount;
         }
     }
 }

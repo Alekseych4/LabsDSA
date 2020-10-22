@@ -25,7 +25,9 @@ namespace LabSaod_9
             
             Console.WriteLine("Команды для использования программы:");
             Console.WriteLine("ADD  добавить элементы в ИСД");
-            Console.WriteLine("DPRINT   обход в прямом порядке");
+            Console.WriteLine("PPRINT   обход в прямом порядке");
+            Console.WriteLine("IPRINT  обход в симметричном порядке");
+            Console.WriteLine("RPRINT  обход в обратном порядке");
 
             while (true)
             {
@@ -43,7 +45,7 @@ namespace LabSaod_9
             switch (command)
             {
                 case "ADD":
-                    if (_myPbTree.add(new int []{1,2,3,4,5,6}))
+                    if (_myPbTree.add(randomArray(_myPbTree.getSize())))
                     {
                         Console.WriteLine("Дерево успешно построено");
                     }
@@ -53,10 +55,29 @@ namespace LabSaod_9
                     }
                     break;
                 
-                case "DPRINT":
-                    _myPbTree.printDirectTraversal();
+                case "PPRINT":
+                    _myPbTree.printPreorderTraversal();
+                    break;
+                
+                case "IPRINT":
+                    _myPbTree.printInorderTraversal();
+                    break;
+                case "RPRINT": 
+                    _myPbTree.printReversedInorderTraversal();
                     break;
             }
+        }
+
+        private static int[] randomArray(int length)
+        {
+            var random = new Random();
+            var a = new int[length];
+            for (int i = 0; i < length; i++)
+            {
+                a[i] = random.Next(0, 99);
+            }
+
+            return a;
         }
     }
 }
