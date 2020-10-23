@@ -100,7 +100,7 @@ namespace Lab1
                 {
                     temp = head;
                     
-                    freeCells.showState();
+                    //freeCells.showState();
                     
                     do
                     {
