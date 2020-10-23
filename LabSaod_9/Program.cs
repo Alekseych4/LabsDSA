@@ -28,6 +28,8 @@ namespace LabSaod_9
             Console.WriteLine("PPRINT   обход в прямом порядке");
             Console.WriteLine("IPRINT  обход в симметричном порядке");
             Console.WriteLine("RPRINT  обход в обратном порядке");
+            Console.WriteLine("ILPRINT  нерекурсивный обход в симметричном порядке");
+            Console.WriteLine("EXT  выход");
 
             while (true)
             {
@@ -64,6 +66,9 @@ namespace LabSaod_9
                     break;
                 case "RPRINT": 
                     _myPbTree.printReversedInorderTraversal();
+                    break;
+                case "ILPRINT":
+                    _myPbTree.printInorderWithLoop();
                     break;
             }
         }

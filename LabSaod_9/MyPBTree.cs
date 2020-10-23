@@ -67,6 +67,57 @@ namespace LabSaod_9
             return current;
         }
 
+        public void printInorderWithLoop()
+        {
+            if (root == null)
+            {
+                Console.WriteLine("Дерево пустое");
+                return;
+            }
+            
+            var level = 0;
+            var stack = new MyStack<TreeNodeForPrint<DataStructure<T>>>();
+            var currentEl = root;
+            stack.push(new TreeNodeForPrint<DataStructure<T>>() {Node = currentEl, Level = level});
+
+            do
+            {
+                if (currentEl.LeftDesc != null)
+                {
+                    stack.push(new TreeNodeForPrint<DataStructure<T>>() {Node = currentEl.LeftDesc, Level = ++level});
+                    currentEl = currentEl.LeftDesc;
+                }
+                else
+                {
+                    if (stack.isEmpty())
+                    {
+                        break;
+                    }
+                    
+                    var elOut = stack.pop();
+                    if (elOut != null)
+                    {
+                        var el = elOut.Node;
+                        currentEl = el;
+                        
+                        printIndent(elOut.Level);
+                        Console.WriteLine(el.Node.ToString());
+                        level--;
+
+                        if (currentEl.RightDesc != null)
+                        {
+                            stack.push(new TreeNodeForPrint<DataStructure<T>>()
+                                {Node = currentEl.RightDesc, Level = elOut.Level + 1});
+                            
+                            currentEl = el.RightDesc;
+                            level = elOut.Level + 1;
+                        }
+                    }
+                    
+                }
+            } while (true);
+        }
+
         public void printPreorderTraversal()
         {
             if (root == null)
