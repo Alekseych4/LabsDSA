@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Lab1
 {
-    public class MyDynamicList<T> : IDisposable
+    public class MyDynamicList<T> : IDisposable where T : IDisposable
     {
         private DataStructure<T> temp;
         private DataStructure<T> tail;
@@ -37,7 +37,7 @@ namespace Lab1
             try
             {
                 var dataStructure = findItemByName(itemToRemove);
-                itemToRemove = default;
+                itemToRemove.Dispose();
 
                 var obj = dataStructure.Node;
 
@@ -67,6 +67,12 @@ namespace Lab1
                         temp = temp.Next;
                     } while (temp != null);
                 }
+                
+                Console.WriteLine("Удаленный элемент:");
+                Console.WriteLine(obj.ToString());
+                
+                obj.Dispose();
+                
                 return obj;
             }
             catch (Exception e)

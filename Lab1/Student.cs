@@ -1,7 +1,9 @@
 ﻿
+using System;
+
 namespace Lab1
 {
-    public class Student
+    public class Student : IDisposable
     {
         private string _name;
         private string _surname;
@@ -50,6 +52,14 @@ namespace Lab1
             }
 
             return false;
+        }
+
+        public void Dispose()
+        {
+            var weakStudent = new WeakReference(this);
+            _mark = null;
+            _name = null;
+            _surname = null;
         }
     }
 }

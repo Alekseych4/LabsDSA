@@ -59,7 +59,7 @@ namespace Lab1
                         }
                         else
                         {
-                            Console.WriteLine("Не найти элемент");
+                            Console.WriteLine("Не удалось найти элемент");
                         }
                     }
                     else
