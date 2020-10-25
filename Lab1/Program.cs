@@ -35,6 +35,7 @@ namespace Lab1
             {
                 if (command.Equals("q"))
                 {
+                    _listOfLists.Dispose();
                     break;
                 }
                 CommandRecognizer(command);
@@ -53,13 +54,13 @@ namespace Lab1
                     {
                         Console.WriteLine("Введите имя для удаления:");
                         var stToDelete = listToSearchIn.remove(new Student(Console.ReadLine(), null, null));
-                        if (stToDelete != null)
+                        if (stToDelete)
                         {
-                            Console.WriteLine(stToDelete.ToString());
+                            Console.WriteLine("Удаление прошло успешно");
                         }
                         else
                         {
-                            Console.WriteLine("Не удалось найти элемент");
+                            Console.WriteLine("Не удалось удалить элемент");
                         }
                     }
                     else
@@ -72,10 +73,10 @@ namespace Lab1
                     Console.WriteLine("Введите тег списка для удаления:");
                     var listToDel = Console.ReadLine();
                     var deletedList = _listOfLists.remove(new MyDynamicList<Student>(listToDel));
-                    if (deletedList != null)
+                    if (deletedList)
                     {
-                        Console.WriteLine("Удален список с тегом: " + deletedList.Tag + "; Сожержимое:");
-                        deletedList.showState();
+                        Console.WriteLine("Удаление прошло успешно");
+                        
                     }
                     else
                     {

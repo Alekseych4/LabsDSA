@@ -16,28 +16,31 @@ namespace Lab1
 
         public MyDynamicList()
         {
-            temp = default;
-            tail = default;
-            head = default;
+            temp = null;
+            tail = null;
+            head = null;
         }
         
         public MyDynamicList(string tag)
         {
-            temp = default;
-            tail = default;
-            head = default;
+            temp = null;
+            tail = null;
+            head = null;
             this._tag = tag;
         }
 
-        public T remove(T itemToRemove)
+        public bool remove(T itemToRemove)
         {
-            if (isEmpty()) return default;
-            if (itemToRemove == null) return default;
+            if (isEmpty()) return false;
+            if (itemToRemove == null) return false;
 
             try
             {
                 var dataStructure = findItemByName(itemToRemove);
+                if (dataStructure == null) return false;
+                
                 itemToRemove.Dispose();
+                itemToRemove = default;
 
                 var obj = dataStructure.Node;
 
@@ -52,33 +55,38 @@ namespace Lab1
                     temp = head;
                     if (temp.Node == null)
                     {
+                        head = null;
+                        temp = head;
                         tail = head;
-                        return obj;
                     }
-                    do
+                    else
                     {
-                        if (temp.Next.Node == null)
+                        do
                         {
-                            temp.Next = null;
-                            tail = temp;
-                            break;
-                        }
+                            if (temp.Next.Node == null)
+                            {
+                                temp.Next = null;
+                                tail = temp;
+                                break;
+                            }
 
-                        temp = temp.Next;
-                    } while (temp != null);
+                            temp = temp.Next;
+                        } while (temp != null);
+                    }
                 }
                 
                 Console.WriteLine("Удаленный элемент:");
                 Console.WriteLine(obj.ToString());
                 
                 obj.Dispose();
+                obj = default;
                 
-                return obj;
+                return true;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return default;
+                return false;
             }
 
         }
@@ -145,12 +153,20 @@ namespace Lab1
         public bool addAfter(T itemToAdd, T itemToFind)
         {
             if (itemToAdd == null || itemToFind == null) return false;
-            if (isEmpty()) return add(itemToAdd);
+            if (isEmpty())
+            {
+                itemToFind.Dispose();
+                itemToFind = default;
+                return add(itemToAdd);
+            }
         
             try
             {
                 var itemFromList = findItemByName(itemToFind);
+                
+                itemToFind.Dispose();
                 itemToFind = default;
+                
                 if (itemFromList == null) return false;
                 
                 temp = new DataStructure<T>()
@@ -171,13 +187,21 @@ namespace Lab1
         public bool addBefore(T itemToAdd, T itemToFind)
         {
             if (itemToAdd == null || itemToFind == null) return false;
-            if (isEmpty()) return add(itemToAdd);
+            if (isEmpty())
+            {
+                itemToFind.Dispose();
+                itemToFind = default;
+                return add(itemToAdd);
+            }
             
             try
             {
                 //itemFromList   (itemToAdd)   itemToFind
                 var itemFromList = findPreviousItem(itemToFind);
+                
+                itemToFind.Dispose();
                 itemToFind = default;
+                
                 if (itemFromList == null) return false;
                 
                 if (itemFromList.Node == null && itemFromList.Next == null)
@@ -213,10 +237,15 @@ namespace Lab1
             if (!isEmpty() && itemToFind != null)
             {
                 var result = findItemByName(itemToFind);
+                
                 if (result != null)
                 {
+                    itemToFind.Dispose();
+                    itemToFind = default;
                     return result.Node;
                 }
+                itemToFind.Dispose();
+                itemToFind = default;
             }
 
             return default;
@@ -230,12 +259,14 @@ namespace Lab1
                 var el = temp.Node;
                 if (el.Equals(itemToFind))
                 {
+                    itemToFind = default;
                     return temp;    
                 }
 
                 temp = temp.Next;
             } while (temp != null);
             
+            itemToFind = default;
             return default;
         }
         
@@ -243,6 +274,7 @@ namespace Lab1
         {
             if (head.Node.Equals(itemToFind))
             {
+                itemToFind = default;
                 return new DataStructure<T>()
                 {
                     Node = default,
@@ -256,12 +288,14 @@ namespace Lab1
                 var el = temp.Next.Node;
                 if (el.Equals(itemToFind))
                 {
+                    itemToFind = default;
                     return temp;    
                 }
 
                 temp = temp.Next;
             } 
             
+            itemToFind = default;
             return default;
         }
 
@@ -308,7 +342,7 @@ namespace Lab1
                 }
                 catch (Exception e)
                 {
-                    return "Ошибка выполнения запроса";
+                    return "Ошибка перевода в строку";
                 }
             }
 
@@ -320,21 +354,23 @@ namespace Lab1
             return "Данные отсутствуют";
         }
 
-        ~MyDynamicList()
-        {
-            while (!isEmpty())
-            {
-                tail.Node = default;
-                tail = tail.Next;
-            }
-        }
-        
         public void Dispose()
         {
             while (!isEmpty())
             {
-                tail.Node = default;
-                tail = tail.Next;
+                head.Node = default;
+                if (head.Next != null)
+                {
+                    temp = head.Next;
+                    head = null;
+                    head = temp;
+                }
+                else
+                {
+                    temp = null;
+                    head = null;
+                    tail = null;
+                }
             }
         }
     }

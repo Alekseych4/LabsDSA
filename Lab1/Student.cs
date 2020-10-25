@@ -56,7 +56,6 @@ namespace Lab1
 
         public void Dispose()
         {
-            var weakStudent = new WeakReference(this);
             _mark = null;
             _name = null;
             _surname = null;
