@@ -7,28 +7,17 @@ namespace LabSaod_9
         private static MyPBTree<int> _myPbTree;
         public static void Main(string[] args)
         {
-            do
-            {
-                Console.WriteLine("Задайте количество элементов ИСД:");
-                Console.WriteLine();
-                var lengthStr = Console.ReadLine();
-                if (int.TryParse(lengthStr, out var length))
-                {
-                    if (length > 0)
-                    {
-                        _myPbTree = new MyPBTree<int>(length);
-                        break;
-                    }
-                }
-            } while (true);
-            
+
+            _myPbTree = new MyPBTree<int>();
             
             Console.WriteLine("Команды для использования программы:");
-            Console.WriteLine("ADD  добавить элементы в ИСД");
+            Console.WriteLine("ADD  добавить элемент в дерево");
             Console.WriteLine("PPRINT   обход в прямом порядке");
             Console.WriteLine("IPRINT  обход в симметричном порядке");
             Console.WriteLine("RPRINT  обход в обратном порядке");
             Console.WriteLine("ILPRINT  нерекурсивный обход в симметричном порядке");
+            Console.WriteLine("GET  найти элемент");
+            Console.WriteLine("DEL   удалить дерево");
             Console.WriteLine("EXT  выход");
 
             while (true)
@@ -47,14 +36,26 @@ namespace LabSaod_9
             switch (command)
             {
                 case "ADD":
-                    if (_myPbTree.add(randomArray(_myPbTree.getSize())))
+                    Console.WriteLine("Введите число - элемент для добавления:");
+                    var itemToAdd = Console.ReadLine();
+                    Console.WriteLine("Введите число для поиска");
+                    var itemToFind = Console.ReadLine();
+                    if (int.TryParse(itemToAdd, out int a) && int.TryParse(itemToFind, out int b))
                     {
-                        Console.WriteLine("Дерево успешно построено");
+                        if (_myPbTree.addItem(a, b))
+                        {
+                            Console.WriteLine("Элемент успешно добавлен");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Произошла ошибка");
+                        }
                     }
                     else
                     {
-                        Console.WriteLine("Дерево уже построено, либо произошла ошибка");
+                        Console.WriteLine("Введите ЧИСЛА!");
                     }
+                    
                     break;
                 
                 case "PPRINT":
@@ -69,6 +70,22 @@ namespace LabSaod_9
                     break;
                 case "ILPRINT":
                     _myPbTree.printInorderWithLoop();
+                    break;
+                case "GET":
+                    Console.WriteLine("Введите число для поиска");
+                    var itemToSearch = Console.ReadLine();
+                    if (int.TryParse(itemToSearch, out int o))
+                    {
+                        _myPbTree.getItem(o);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Введите ЧИСЛО!");
+                    }
+                    
+                    break;
+                case "DEL":
+                    _myPbTree.Dispose();
                     break;
             }
         }

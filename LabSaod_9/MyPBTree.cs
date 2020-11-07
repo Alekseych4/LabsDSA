@@ -2,69 +2,139 @@
 
 namespace LabSaod_9
 {
-    public class MyPBTree<T>
+    public class MyPBTree<T> : IDisposable
     {
         private DataStructure<T> root;
-        private int nodesAmount;
-        private T[] elementsToAdd;
-        
-        public MyPBTree(int nodesAmount)
+
+        public MyPBTree()
         {
             root = default;
-            this.nodesAmount = nodesAmount;
         }
 
-        public bool add(T[] elements)
+        public bool addItem(T itemToAdd, T itemToSearch)
         {
-            if (elements.Length != nodesAmount)
+            if (root == null)
             {
-                return false;
+                root = new DataStructure<T>()
+                {
+                    Node = itemToAdd,
+                    LeftDesc = null,
+                    RightDesc = null
+                };
+                
+                return true;
             }
             
-            elementsToAdd = elements;
-            
-            int count = nodesAmount;
-            nodesAmount--;
+            var structureFound = getItem_preorder(root, itemToSearch);
 
-            root = addNodes(count);
-            
-            nodesAmount = count;
+            if (structureFound == null) return false;
 
-            if (root != default)
+            if (structureFound.LeftDesc != null && structureFound.RightDesc != null)
             {
+                Console.WriteLine("Добавление невозможно - существуют оба потомка");
+                return false;
+            }
+
+            if (structureFound.LeftDesc == null && structureFound.RightDesc == null)
+            {
+                Console.WriteLine("Создать вершину как левый или правый потомок? L/R (По умолчанию создастся как левый потомок)");
+                var answer = Console.ReadLine();
+                if (answer == "L")
+                {
+                    var newItem = new DataStructure<T>()
+                    {
+                        Node = itemToAdd,
+                        LeftDesc = null,
+                        RightDesc = null
+                    };
+
+                    structureFound.LeftDesc = newItem;
+                    return true;
+                }
+
+                if (answer == "R")
+                {
+                    var newItem = new DataStructure<T>()
+                    {
+                        Node = itemToAdd,
+                        LeftDesc = null,
+                        RightDesc = null
+                    };
+
+                    structureFound.RightDesc = newItem;
+                    return true;
+                }
+                
+                Console.WriteLine("Входные данные неверны - сохранение по умолчанию");
+            }
+
+            if (structureFound.LeftDesc == null)
+            {
+                var newItem = new DataStructure<T>()
+                {
+                    Node = itemToAdd,
+                    LeftDesc = null,
+                    RightDesc = null
+                };
+
+                structureFound.LeftDesc = newItem;
+                return true;
+            }
+
+            if (structureFound.RightDesc == null)
+            {
+                var newItem = new DataStructure<T>()
+                {
+                    Node = itemToAdd,
+                    LeftDesc = null,
+                    RightDesc = null
+                };
+
+                structureFound.RightDesc = newItem;
                 return true;
             }
 
             return false;
         }
 
-        private DataStructure<T> addNodes(int amount)
+        public void getItem(T itemToSearch)
         {
+            if (root == null)
+            {
+                Console.WriteLine("Дерево пустое");
+                return;
+            }
+
+            var searchResult = getItem_preorder(root, itemToSearch);
+            if (searchResult != null)
+            {
+                Console.WriteLine(searchResult.Node);
+                return;
+            }
             
-            if (amount == 0)
+            Console.WriteLine("Элемент не найден");
+        }
+
+        private DataStructure<T> getItem_preorder(DataStructure<T> el, T itemToSearch)
+        {
+            if (itemToSearch.Equals(el.Node))
             {
-                return default;
+                return el;
+            }
+            
+            if (el.LeftDesc != null)
+            {
+                var res = getItem_preorder(el.LeftDesc, itemToSearch);
+                if (res != null) return res;
             }
 
-            DataStructure<T> current = new DataStructure<T>(){Node = elementsToAdd[nodesAmount--]};
-
-            amount--;
-
-            var leftHalf = amount / 2;
-            var rightHalf = amount - leftHalf;
-
-            if (leftHalf > 0)
+            if (el.RightDesc != null)
             {
-                var nextLeft = addNodes(leftHalf);
-                current.LeftDesc = nextLeft;
-            }
-            if(rightHalf > 0)
-            {
-                var nextRight = addNodes(rightHalf);
-                current.RightDesc = nextRight;
+                var res = getItem_preorder(el.RightDesc, itemToSearch);
+                if (res != null) return res;
             }
 
-            return current;
+            return null;
         }
 
         public void printInorderWithLoop()
@@ -208,9 +278,32 @@ namespace LabSaod_9
             }
         }
 
-        public int getSize()
+        private void disposeTraversal(DataStructure<T> el)
         {
-            return nodesAmount;
+            if (el.LeftDesc != null)
+            {
+                disposeTraversal(el.LeftDesc);
+            }
+
+            if (el.RightDesc != null)
+            {
+                disposeTraversal(el.RightDesc);
+            }
+
+            el.Node = default;
+            el.LeftDesc = null;
+            el.RightDesc = null;
+            el = null;
+        }
+
+        public void Dispose()
+        {
+            if (root != null)
+            {
+                disposeTraversal(root);
+            }
+
+            root = null;
         }
     }
 }
