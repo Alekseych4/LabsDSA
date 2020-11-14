@@ -11,7 +11,8 @@ namespace LabSaod_9
             _myPbTree = new MyPBTree<int>();
             
             Console.WriteLine("Команды для использования программы:");
-            Console.WriteLine("ADD  добавить элемент в дерево");
+            Console.WriteLine("ADDR  добавить элемент в дерево рекурсивно");
+            Console.WriteLine("ADDL  добавить элемент в дерево в цикле");
             Console.WriteLine("PPRINT   обход в прямом порядке");
             Console.WriteLine("IPRINT  обход в симметричном порядке");
             Console.WriteLine("RPRINT  обход в обратном порядке");
@@ -35,14 +36,13 @@ namespace LabSaod_9
         {
             switch (command)
             {
-                case "ADD":
-                    Console.WriteLine("Введите число - элемент для добавления:");
+                case "ADDR":
+                    Console.WriteLine("Введите ключ:");
                     var itemToAdd = Console.ReadLine();
-                    Console.WriteLine("Введите число для поиска");
-                    var itemToFind = Console.ReadLine();
-                    if (int.TryParse(itemToAdd, out int a) && int.TryParse(itemToFind, out int b))
+                    
+                    if (int.TryParse(itemToAdd, out int a))
                     {
-                        if (_myPbTree.addItem(a, b))
+                        if (_myPbTree.add(a, 999))
                         {
                             Console.WriteLine("Элемент успешно добавлен");
                         }

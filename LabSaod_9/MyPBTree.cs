@@ -17,7 +17,7 @@ namespace LabSaod_9
             {
                 root = new DataStructure<T>()
                 {
-                    Node = itemToAdd,
+                    Value = itemToAdd,
                     LeftDesc = null,
                     RightDesc = null
                 };
@@ -43,7 +43,7 @@ namespace LabSaod_9
                 {
                     var newItem = new DataStructure<T>()
                     {
-                        Node = itemToAdd,
+                        Value = itemToAdd,
                         LeftDesc = null,
                         RightDesc = null
                     };
@@ -56,7 +56,7 @@ namespace LabSaod_9
                 {
                     var newItem = new DataStructure<T>()
                     {
-                        Node = itemToAdd,
+                        Value = itemToAdd,
                         LeftDesc = null,
                         RightDesc = null
                     };
@@ -72,7 +72,7 @@ namespace LabSaod_9
             {
                 var newItem = new DataStructure<T>()
                 {
-                    Node = itemToAdd,
+                    Value = itemToAdd,
                     LeftDesc = null,
                     RightDesc = null
                 };
@@ -85,7 +85,7 @@ namespace LabSaod_9
             {
                 var newItem = new DataStructure<T>()
                 {
-                    Node = itemToAdd,
+                    Value = itemToAdd,
                     LeftDesc = null,
                     RightDesc = null
                 };
@@ -97,9 +97,227 @@ namespace LabSaod_9
             return false;
         }
 
-        public void getItem(T itemToSearch)
+        public bool add(int key, T value)
+        {
+            
+            var addResult = addNodeRecursively(root, key);
+
+            if (addResult == null)
+            {
+                Console.WriteLine("Не удалось добавить объект, либо объект с таким ключом уже существует");
+                return false;
+            }
+
+            if (root == null)
+            {
+                root = addResult;
+            }
+
+            return true;
+        }
+        
+        
+
+        private DataStructure<T> addNodeRecursively(DataStructure<T> item, int key)
+        {
+            if (item == null)
+            {
+                return new DataStructure<T>()
+                {
+                    Key = key,
+                    KeyEqualityCounter = 1,
+                    LeftDesc = null,
+                    RightDesc = null
+                };
+            }
+            else
+            {
+                if (key < item.Key)
+                {
+                    return addNodeRecursively(item.LeftDesc, key);
+                }
+                else if (key > item.Key)
+                {
+                    return addNodeRecursively(item.RightDesc, key);
+                }
+                else 
+                {
+                    item.KeyEqualityCounter++;
+                }
+            }
+
+            return null;
+        }
+
+        public bool addNodeInLoop(int key, T value)
         {
             if (root == null)
+            {
+                var i = new DataStructure<T>()
+                {
+                    Value = value,
+                    Key = key,
+                    KeyEqualityCounter = 1,
+                    LeftDesc = null,
+                    RightDesc = null
+                };
+
+                return true;
+            }
+
+            var current = root;
+            var parent = root;
+
+            while (current != null)
+            {
+                parent = current;
+                if (key < current.Key)
+                {
+                    current = current.LeftDesc;
+                }
+                else if(key > current.Key)
+                {
+                    current = current.RightDesc;
+                }
+                else
+                {
+                    current.Key++;
+                    return false;
+                }
+            }
+            
+            var newItem = new DataStructure<T>()
+            {
+                Key = key,
+                Value = value,
+                KeyEqualityCounter = 1,
+                LeftDesc = null,
+                RightDesc = null
+            }; 
+
+            if (key < parent.Key)
+            {
+                parent.LeftDesc = newItem;
+            }
+            else if(key > parent.Key)
+            {
+                parent.RightDesc = newItem;
+            }
+
+            return true;
+        }
+
+        //возвращает количество повторений узла
+        public DataStructure<T> findItem(int key)
+        {
+            if (root == null)    
+            {
+                Console.WriteLine("Дерево пустое");
+                return null;
+            }
+
+            var current = root;
+
+            while (current != null)
+            {
+                if (key < current.Key)
+                {
+                    current = current.LeftDesc;
+                }
+                else if(key > current.Key)
+                {
+                    current = current.RightDesc;
+                }
+                else
+                {
+                    return current;
+                }
+            }
+            
+            Console.WriteLine("Элемент не найден");
+            return null;
+        }
+        
+        public void printTreeInString()
+        {
+            if (root == null)
+            {
+                Console.WriteLine("Дерево пустое");
+                return;
+            }
+            
+            printAscending(root);
+        }
+
+        private void printAscending(DataStructure<T> el)
+        {
+            if (el.LeftDesc != null)
+            {
+                printAscending(el.LeftDesc);
+            }
+            
+            Console.WriteLine($"{el.Key}({el.KeyEqualityCounter})  ");
+            
+            if (el.RightDesc != null)
+            {
+                printAscending(el.RightDesc);
+            }
+
+        }
+
+        public bool delete(int key)
+        {
+            var foundItem = findItem(key);
+
+            if (foundItem == null) return false;
+
+            if (foundItem.LeftDesc == null && foundItem.RightDesc == null)
+            {
+                //TODO: it won't work
+                foundItem.Dispose();
+                foundItem = null;
+                return true;
+            }
+
+            if (foundItem.LeftDesc == null)
+            {
+                foundItem = foundItem.RightDesc;
+                return true;
+            }
+
+            if (foundItem.RightDesc == null)
+            {
+                foundItem = foundItem.LeftDesc;
+                return true;
+            }
+
+            var itemToSwap = swapOnLastRightOnLeftSubtree(foundItem.LeftDesc);
+
+            if (delete(itemToSwap.Key))
+            {
+                foundItem.Key = itemToSwap.Key;
+                foundItem.Value = itemToSwap.Value;
+                foundItem.KeyEqualityCounter = itemToSwap.KeyEqualityCounter;
+            
+                return true;
+            }
+
+            return false;
+        }
+
+        private DataStructure<T> swapOnLastRightOnLeftSubtree(DataStructure<T> item)
+        {
+            if (item.RightDesc != null)
+            {
+                return swapOnLastRightOnLeftSubtree(item.RightDesc);
+            }
+
+            return item;
+        }
+
+        public void getItem(T itemToSearch)
+        {
+            if (root == null)    
             {
                 Console.WriteLine("Дерево пустое");
                 return;
@@ -108,7 +326,7 @@ namespace LabSaod_9
             var searchResult = getItem_preorder(root, itemToSearch);
             if (searchResult != null)
             {
-                Console.WriteLine(searchResult.Node);
+                Console.WriteLine(searchResult.Value);
                 return;
             }
             
@@ -117,7 +335,7 @@ namespace LabSaod_9
 
         private DataStructure<T> getItem_preorder(DataStructure<T> el, T itemToSearch)
         {
-            if (itemToSearch.Equals(el.Node))
+            if (itemToSearch.Equals(el.Value))
             {
                 return el;
             }
@@ -171,7 +389,7 @@ namespace LabSaod_9
                         currentEl = el;
                         
                         printIndent(elOut.Level);
-                        Console.WriteLine(el.Node.ToString());
+                        Console.WriteLine(el.Value.ToString());
                         level--;
 
                         if (currentEl.RightDesc != null)
@@ -202,7 +420,7 @@ namespace LabSaod_9
         private void preorderTraversal(DataStructure<T> el, int level)
         {
             printIndent(level);
-            Console.WriteLine(el.Node.ToString());
+            Console.WriteLine(el.Value.ToString());
             
             if (el.LeftDesc != null)
             {
@@ -234,7 +452,7 @@ namespace LabSaod_9
             }
             
             printIndent(level);
-            Console.WriteLine(el.Node);
+            Console.WriteLine(el.Value);
             
             
             if (el.RightDesc != null)
@@ -262,7 +480,7 @@ namespace LabSaod_9
             }
             
             printIndent(level);
-            Console.WriteLine(el.Node);
+            Console.WriteLine($"{el.Key}({el.KeyEqualityCounter})");
             
             if (el.LeftDesc != null)
             {
@@ -290,7 +508,7 @@ namespace LabSaod_9
                 disposeTraversal(el.RightDesc);
             }
 
-            el.Node = default;
+            el.Value = default;
             el.LeftDesc = null;
             el.RightDesc = null;
             el = null;
