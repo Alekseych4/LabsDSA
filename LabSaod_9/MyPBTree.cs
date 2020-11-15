@@ -134,11 +134,15 @@ namespace LabSaod_9
             {
                 if (key < item.Key)
                 {
-                    return addNodeRecursively(item.LeftDesc, key);
+                    var added =  addNodeRecursively(item.LeftDesc, key);
+                    item.LeftDesc = added;
+                    return item;
                 }
                 else if (key > item.Key)
                 {
-                    return addNodeRecursively(item.RightDesc, key);
+                    var added =  addNodeRecursively(item.RightDesc, key);
+                    item.RightDesc = added;
+                    return item;
                 }
                 else 
                 {
@@ -146,14 +150,14 @@ namespace LabSaod_9
                 }
             }
 
-            return null;
+            return item;
         }
 
         public bool addNodeInLoop(int key, T value)
         {
             if (root == null)
             {
-                var i = new DataStructure<T>()
+                root = new DataStructure<T>()
                 {
                     Value = value,
                     Key = key,
@@ -181,8 +185,9 @@ namespace LabSaod_9
                 }
                 else
                 {
-                    current.Key++;
-                    return false;
+                    current.KeyEqualityCounter++;
+                    Console.WriteLine("Увеличен счетчик");
+                    return true;
                 }
             }
             
@@ -208,7 +213,18 @@ namespace LabSaod_9
         }
 
         //возвращает количество повторений узла
-        public DataStructure<T> findItem(int key)
+        public int getItemRepeats(int key)
+        {
+            var item = findItem(key);
+            if (item == null)
+            {
+                return -1;
+            }
+
+            return item.KeyEqualityCounter;
+        }
+
+        private DataStructure<T> findItem(int key)
         {
             if (root == null)    
             {
@@ -256,7 +272,7 @@ namespace LabSaod_9
                 printAscending(el.LeftDesc);
             }
             
-            Console.WriteLine($"{el.Key}({el.KeyEqualityCounter})  ");
+            Console.Write($"{el.Key}({el.KeyEqualityCounter})  ");
             
             if (el.RightDesc != null)
             {
@@ -267,42 +283,88 @@ namespace LabSaod_9
 
         public bool delete(int key)
         {
-            var foundItem = findItem(key);
-
-            if (foundItem == null) return false;
-
-            if (foundItem.LeftDesc == null && foundItem.RightDesc == null)
-            {
-                //TODO: it won't work
-                foundItem.Dispose();
-                foundItem = null;
-                return true;
-            }
-
-            if (foundItem.LeftDesc == null)
-            {
-                foundItem = foundItem.RightDesc;
-                return true;
-            }
-
-            if (foundItem.RightDesc == null)
-            {
-                foundItem = foundItem.LeftDesc;
-                return true;
-            }
-
-            var itemToSwap = swapOnLastRightOnLeftSubtree(foundItem.LeftDesc);
-
-            if (delete(itemToSwap.Key))
-            {
-                foundItem.Key = itemToSwap.Key;
-                foundItem.Value = itemToSwap.Value;
-                foundItem.KeyEqualityCounter = itemToSwap.KeyEqualityCounter;
+            if (root == null) return false;
             
+            var current = root;
+            var temp = root;
+
+            while (current != null)
+            {
+
+                if (key < current.Key)
+                {
+                    temp = current;
+                    current = current.LeftDesc;
+                }
+                else if (key > current.Key)
+                {
+                    temp = current;
+                    current = current.RightDesc;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (current == null)
+            {
+                Console.WriteLine("Элемент не найден");
+                return false;
+            }
+            
+            if (current.LeftDesc == null && current.RightDesc == null)
+            {
+                if (temp.LeftDesc == current)
+                {
+                    temp.LeftDesc = null;
+                }
+
+                else if (temp.RightDesc == current)
+                {
+                    temp.RightDesc = null;
+                }
+                else
+                {
+                    root = null;
+                }
+                
+                current.Dispose();
+                current = null;
                 return true;
             }
 
-            return false;
+            if (current.LeftDesc == null)
+            {
+                current.Value = current.RightDesc.Value;
+                current.Key = current.RightDesc.Key;
+                current.KeyEqualityCounter = current.RightDesc.KeyEqualityCounter;
+                current.LeftDesc = current.RightDesc.LeftDesc;
+                current.RightDesc = current.RightDesc.RightDesc;
+                return true;
+            }
+
+            if (current.RightDesc == null)
+            {
+                current.Value = current.LeftDesc.Value;
+                current.Key = current.LeftDesc.Key;
+                current.KeyEqualityCounter = current.LeftDesc.KeyEqualityCounter;
+                current.RightDesc = current.LeftDesc.RightDesc;
+                current.LeftDesc = current.LeftDesc.LeftDesc;
+                return true;
+            }
+
+            var itemToSwap = swapOnLastRightOnLeftSubtree(current.LeftDesc);
+
+            current.Value = itemToSwap.Value;
+            current.KeyEqualityCounter = itemToSwap.KeyEqualityCounter;
+            var tempKey = itemToSwap.Key;
+            delete(itemToSwap.Key);
+            
+            current.Key = tempKey;
+
+            return true;
+            
         }
 
         private DataStructure<T> swapOnLastRightOnLeftSubtree(DataStructure<T> item)
@@ -480,7 +542,7 @@ namespace LabSaod_9
             }
             
             printIndent(level);
-            Console.WriteLine($"{el.Key}({el.KeyEqualityCounter})");
+            Console.WriteLine($"{el.Key}");
             
             if (el.LeftDesc != null)
             {
