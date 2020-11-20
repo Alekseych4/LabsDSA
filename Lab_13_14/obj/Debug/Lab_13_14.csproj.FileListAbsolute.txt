@@ -1,0 +1,5 @@
+C:\Users\Aleksey\RiderProjects\Lab_13_14\Lab_13_14\bin\Debug\Lab_13_14.exe
+C:\Users\Aleksey\RiderProjects\Lab_13_14\Lab_13_14\bin\Debug\Lab_13_14.pdb
+C:\Users\Aleksey\RiderProjects\Lab_13_14\Lab_13_14\obj\Debug\Lab_13_14.csprojAssemblyReference.cache
+C:\Users\Aleksey\RiderProjects\Lab_13_14\Lab_13_14\obj\Debug\Lab_13_14.exe
+C:\Users\Aleksey\RiderProjects\Lab_13_14\Lab_13_14\obj\Debug\Lab_13_14.pdb
