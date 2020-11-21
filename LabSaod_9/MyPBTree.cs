@@ -11,92 +11,6 @@ namespace LabSaod_9
             root = default;
         }
 
-        public bool addItem(T itemToAdd, T itemToSearch)
-        {
-            if (root == null)
-            {
-                root = new DataStructure<T>()
-                {
-                    Value = itemToAdd,
-                    LeftDesc = null,
-                    RightDesc = null
-                };
-                
-                return true;
-            }
-            
-            var structureFound = getItem_preorder(root, itemToSearch);
-
-            if (structureFound == null) return false;
-
-            if (structureFound.LeftDesc != null && structureFound.RightDesc != null)
-            {
-                Console.WriteLine("Добавление невозможно - существуют оба потомка");
-                return false;
-            }
-
-            if (structureFound.LeftDesc == null && structureFound.RightDesc == null)
-            {
-                Console.WriteLine("Создать вершину как левый или правый потомок? L/R (По умолчанию создастся как левый потомок)");
-                var answer = Console.ReadLine();
-                if (answer == "L")
-                {
-                    var newItem = new DataStructure<T>()
-                    {
-                        Value = itemToAdd,
-                        LeftDesc = null,
-                        RightDesc = null
-                    };
-
-                    structureFound.LeftDesc = newItem;
-                    return true;
-                }
-
-                if (answer == "R")
-                {
-                    var newItem = new DataStructure<T>()
-                    {
-                        Value = itemToAdd,
-                        LeftDesc = null,
-                        RightDesc = null
-                    };
-
-                    structureFound.RightDesc = newItem;
-                    return true;
-                }
-                
-                Console.WriteLine("Входные данные неверны - сохранение по умолчанию");
-            }
-
-            if (structureFound.LeftDesc == null)
-            {
-                var newItem = new DataStructure<T>()
-                {
-                    Value = itemToAdd,
-                    LeftDesc = null,
-                    RightDesc = null
-                };
-
-                structureFound.LeftDesc = newItem;
-                return true;
-            }
-
-            if (structureFound.RightDesc == null)
-            {
-                var newItem = new DataStructure<T>()
-                {
-                    Value = itemToAdd,
-                    LeftDesc = null,
-                    RightDesc = null
-                };
-
-                structureFound.RightDesc = newItem;
-                return true;
-            }
-
-            return false;
-        }
-
         public bool add(int key, T value)
         {
             
@@ -116,8 +30,6 @@ namespace LabSaod_9
             return true;
         }
         
-        
-
         private DataStructure<T> addNodeRecursively(DataStructure<T> item, int key)
         {
             if (item == null)
@@ -130,25 +42,24 @@ namespace LabSaod_9
                     RightDesc = null
                 };
             }
-            else
+            
+            if (key < item.Key)
             {
-                if (key < item.Key)
-                {
-                    var added =  addNodeRecursively(item.LeftDesc, key);
-                    item.LeftDesc = added;
-                    return item;
-                }
-                else if (key > item.Key)
-                {
-                    var added =  addNodeRecursively(item.RightDesc, key);
-                    item.RightDesc = added;
-                    return item;
-                }
-                else 
-                {
-                    item.KeyEqualityCounter++;
-                }
+                var added =  addNodeRecursively(item.LeftDesc, key);
+                item.LeftDesc = added;
+                return item;
             }
+            else if (key > item.Key)
+            {
+                var added =  addNodeRecursively(item.RightDesc, key);
+                item.RightDesc = added;
+                return item;
+            }
+            else 
+            {
+                item.KeyEqualityCounter++;
+            }
+            
 
             return item;
         }
@@ -377,46 +288,6 @@ namespace LabSaod_9
             return item;
         }
 
-        public void getItem(T itemToSearch)
-        {
-            if (root == null)    
-            {
-                Console.WriteLine("Дерево пустое");
-                return;
-            }
-
-            var searchResult = getItem_preorder(root, itemToSearch);
-            if (searchResult != null)
-            {
-                Console.WriteLine(searchResult.Value);
-                return;
-            }
-            
-            Console.WriteLine("Элемент не найден");
-        }
-
-        private DataStructure<T> getItem_preorder(DataStructure<T> el, T itemToSearch)
-        {
-            if (itemToSearch.Equals(el.Value))
-            {
-                return el;
-            }
-            
-            if (el.LeftDesc != null)
-            {
-                var res = getItem_preorder(el.LeftDesc, itemToSearch);
-                if (res != null) return res;
-            }
-
-            if (el.RightDesc != null)
-            {
-                var res = getItem_preorder(el.RightDesc, itemToSearch);
-                if (res != null) return res;
-            }
-
-            return null;
-        }
-
         public void printInorderWithLoop()
         {
             if (root == null)
@@ -482,7 +353,7 @@ namespace LabSaod_9
         private void preorderTraversal(DataStructure<T> el, int level)
         {
             printIndent(level);
-            Console.WriteLine(el.Value.ToString());
+            Console.WriteLine($"{el.Key}(LD: {el.LeftDesc?.Key} RD: {el.RightDesc?.Key})");
             
             if (el.LeftDesc != null)
             {
@@ -514,7 +385,7 @@ namespace LabSaod_9
             }
             
             printIndent(level);
-            Console.WriteLine(el.Value);
+            Console.WriteLine($"{el.Key}(LD: {el.LeftDesc?.Key} RD: {el.RightDesc?.Key})");
             
             
             if (el.RightDesc != null)
@@ -542,7 +413,7 @@ namespace LabSaod_9
             }
             
             printIndent(level);
-            Console.WriteLine($"{el.Key}");
+            Console.WriteLine($"{el.Key}(LD: {el.LeftDesc?.Key} RD: {el.RightDesc?.Key})");
             
             if (el.LeftDesc != null)
             {
@@ -554,7 +425,7 @@ namespace LabSaod_9
         {
             for (int i = 0; i < indent; i++)
             {
-                Console.Write("     ");
+                Console.Write("                 ");
             }
         }
 
