@@ -126,6 +126,27 @@ namespace Lab_13_14
             return inputArray;
         }
 
+        private static int[] advancedInsertionSort(int[] inputArray)
+        {
+            var steps = new int[] { 1, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767};
+            Console.WriteLine(Math.Log(inputArray.Length, 2));
+            Console.WriteLine((int)Math.Log(inputArray.Length, 2));
+            var stepsCount =  (int)Math.Log(inputArray.Length, 2) - 1;
+            for (int i = 0; i < stepsCount; i++)
+            {
+                var k = steps[i];
+                for (int j = k + 1; j < inputArray.Length; j++)
+                {
+                    var temp = inputArray[j];
+                    var 
+                    while ()
+                    {
+                        
+                    }
+                }
+            }
+        } 
+
         private static void commandRecognizer(string command)
         {
             switch (command)
