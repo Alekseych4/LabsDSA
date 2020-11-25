@@ -82,10 +82,10 @@ namespace Lab_13_14
                 var j = i;
                 var temp = inputArray[i + 1];
 
+                equalityCounter++;
                 
                 while (j >= 0 && inputArray[j] > temp)
                 {
-                    equalityCounter++;
                     inputArray[j + 1] = inputArray[j];
                     j--;
                     moveCounter++;
@@ -110,17 +110,20 @@ namespace Lab_13_14
                 
                 for (int j = i + 1; j < inputArray.Length; j++)
                 {
+                    equalityCounter++;
                     if (inputArray[min] > inputArray[j])
                     {
-                        equalityCounter++;
                         min = j;
                     }
                 }
 
-                var temp = inputArray[i];
-                inputArray[i] = inputArray[min];
-                inputArray[min] = temp;
-                moveCounter++;
+                if (min != i)
+                {
+                    var temp = inputArray[i];
+                    inputArray[i] = inputArray[min];
+                    inputArray[min] = temp;
+                    moveCounter++;
+                }
             }
             
             Console.WriteLine($"Количество сравнений в сортировке выбором: {equalityCounter}");
@@ -145,9 +148,11 @@ namespace Lab_13_14
                 {
                     var temp = inputArray[j];
                     var l = j - k;
+                    
+                    equalityCounter++;
+                    
                     while (l >= 0 && temp < inputArray[l])
                     {
-                        equalityCounter++;
                         inputArray[l + k] = inputArray[l];
                         l -= k;
                         moveCounter++;
