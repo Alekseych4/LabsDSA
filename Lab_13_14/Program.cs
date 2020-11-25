@@ -164,11 +164,8 @@ namespace Lab_13_14
             return inputArray;
         }
         
-        private static int[] quickSort(int[] inputArray, int leftStart, int rightStart)
+        private static int[] quickSort(int[] inputArray, int leftStart, int rightStart, ref ulong equalityCounter, ref ulong moveCounter)
         {
-            moveCounter = 0;
-            equalityCounter = 0;
-
             int middle = inputArray[(rightStart + leftStart) / 2];
             int leftSide = leftStart;
             int rightSide = rightStart;
@@ -204,16 +201,13 @@ namespace Lab_13_14
 
             if (leftStart < rightSide)
             {
-                quickSort(inputArray, leftStart, rightSide);
+                quickSort(inputArray, leftStart, rightSide, ref equalityCounter, ref moveCounter);
             }
 
             if (rightStart > leftSide)
             {
-                quickSort(inputArray, leftSide, rightStart);
+                quickSort(inputArray, leftSide, rightStart, ref equalityCounter, ref moveCounter);
             }
-            
-            // Console.WriteLine($"Количество сравнений в быстрой сортировке: {equalityCounter}");
-            // Console.WriteLine($"Количество перестановок в быстрой сортировке: {moveCounter}");
 
             return inputArray;
         }
@@ -224,22 +218,23 @@ namespace Lab_13_14
             equalityCounter = 0;
 
             var curr = (inputArray.Length - 1) / 2;
-            var last = inputArray.Length - 1;
-            
+
             while (curr >= 0)
             {
-                maxHeapify(curr, inputArray, inputArray.Length);
+                maxHeapify(curr, inputArray, inputArray.Length, ref equalityCounter, ref moveCounter);
                 curr--;
             }
-            printArray(inputArray);
+            //printArray(inputArray);
 
             for (int i = inputArray.Length - 1; i > 0; i--)
             {
                 var temp = inputArray[0];
                 inputArray[0] = inputArray[i];
                 inputArray[i] = temp;
+
+                moveCounter++;
                 
-                maxHeapify(0, inputArray, i);
+                maxHeapify(0, inputArray, i, ref equalityCounter, ref moveCounter);
             }
             
             Console.WriteLine($"Количество сравнений в пирамидальной сортировке: {equalityCounter}");
@@ -248,7 +243,7 @@ namespace Lab_13_14
             return inputArray;
         }
 
-        private static void maxHeapify(int curr, int[] inputArray, int size)
+        private static void maxHeapify(int curr, int[] inputArray, int size, ref ulong ec, ref ulong mc)
         {
             var left = 2 * curr + 1;
             var right = 2 * curr + 2;
@@ -259,15 +254,18 @@ namespace Lab_13_14
                 if (inputArray[left] > inputArray[right])
                 {
                     mem = inputArray[left] > inputArray[curr] ? left : curr;
+                    ec++;
                 }
                 else
                 {
                     mem = inputArray[right] > inputArray[curr] ? right : curr;
+                    ec++;
                 }
             }
             else if (left < size && inputArray[curr] < inputArray[left])
             {
                 mem = left;
+                ec++;
             }
 
             if (mem != curr)
@@ -275,8 +273,10 @@ namespace Lab_13_14
                 var temp = inputArray[curr];
                 inputArray[curr] = inputArray[mem];
                 inputArray[mem] = temp;
+
+                mc++;
                 
-                maxHeapify(mem, inputArray, size);
+                maxHeapify(mem, inputArray, size, ref ec, ref mc);
             }
         }
 
@@ -342,9 +342,16 @@ namespace Lab_13_14
                 case "QS":
                     if (array.Length > 0)
                     {
+                        equalityCounter = 0;
+                        moveCounter = 0;
+                        
                         int[] arrayCopy = new int[array.Length];
                         Array.Copy(array, arrayCopy, array.Length);
-                        var result = quickSort(arrayCopy, 0, arrayCopy.Length - 1);
+                        var result = quickSort(arrayCopy, 0, arrayCopy.Length - 1, ref equalityCounter, ref moveCounter);
+                        
+                        Console.WriteLine($"Количество сравнений в быстрой сортировке: {equalityCounter}");
+                        Console.WriteLine($"Количество перестановок в быстрой сортировке: {moveCounter}");
+                        
                         printArray(result);
                     }
                     break;
