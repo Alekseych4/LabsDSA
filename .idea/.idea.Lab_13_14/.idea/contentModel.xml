@@ -9,7 +9,7 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="DataStructure.cs" t="Include" />
         <e p="Lab_13_14.csproj" t="IncludeRecursive" />
-        <e p="MyDynamicList.cs" t="Include" />
+        <e p="MyDynamicQueue.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive" />
         <e p="Program.cs" t="Include" />
         <e p="Properties" t="Include">

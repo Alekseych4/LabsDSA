@@ -1,5 +1,4 @@
 ﻿using System;
-using Lab1;
 
 namespace Lab_13_14
 {
@@ -13,12 +12,10 @@ namespace Lab_13_14
         {
             Console.WriteLine("RAN  создать массив со случайными числами");
             Console.WriteLine("PR  вывести исходный массив");
-            Console.WriteLine("BUS  сортировка пузырьком");
-            Console.WriteLine("INS  сортирока вставками");
-            Console.WriteLine("SES  сортировка выбором");
-            Console.WriteLine("SHELL  метод Шелла");
-            Console.WriteLine("QS  метод быстрой сортировки");
-            Console.WriteLine("HS  пирамидальная сортировка");
+            Console.WriteLine("SKIS  простейшая карманная сортировка со вторым массивом");
+            Console.WriteLine("TAS  простейшая карманная сортировка без второго массива");
+            Console.WriteLine("BS  обобщенная карманная сортировка");
+            Console.WriteLine("RS  поразрядная сортировка");
             Console.WriteLine("EXT  выход");
 
             while (true)
@@ -62,17 +59,27 @@ namespace Lab_13_14
 
         private static int[] sameKeysAndIndices(int[] inputArray)
         {
+            equalityCounter = 0;
+            moveCounter = 0;
+            
             var newArray = new int[inputArray.Length];
             for (int i = 0; i < inputArray.Length; i++)
             {
                 newArray[inputArray[i]] = inputArray[i];
+                moveCounter++;
             }
+            
+            Console.WriteLine($"Количество перестановок в простейшей карманной сортировке со вторым массивом: {moveCounter}");
+            Console.WriteLine($"Количество перестановок в простейшей карманной сортировке со вторым массивом: {equalityCounter}");
 
             return newArray;
         }
 
         private static int[] sameArray(int[] inputArray)
         {
+            equalityCounter = 0;
+            moveCounter = 0;
+            
             for (int i = 0; i < inputArray.Length; i++)
             {
                 var key = inputArray[i];
@@ -80,43 +87,104 @@ namespace Lab_13_14
                 inputArray[key] = key;
                 inputArray[i] = temp;
 
+                moveCounter++;
+                equalityCounter++;
+
                 if (inputArray[i] != i)
                 {
                     i--;
                 }
             }
+            
+            Console.WriteLine($"Количество перестановок в простейшей карманной сортировке со одним массивом: {moveCounter}");
+            Console.WriteLine($"Количество перестановок в простейшей карманной сортировке со одним массивом: {equalityCounter}");
 
             return inputArray;
-        }
-        
-        public struct Item
-        {
-            public int firstKey;
-            public int lastKey;
         }
 
         private static int[] bucketSort(int[] inputArray)
         {
-            var arr = new MyDynamicList<int>[inputArray.Length];
-            for (int i = 0; i < arr.Length; i++)
+            var arr = new MyDynamicQueue<int>[inputArray.Length];
+            for (int i = 0; i < inputArray.Length; i++)
             {
                 var key = inputArray[i];
                 
                 if (arr[key] == null)
                 {
-                    arr[key] = new MyDynamicList<int>();
-                    arr[key].add(inputArray[i]);
+                    arr[key] = new MyDynamicQueue<int>();
+                    arr[key].offer(inputArray[i]);
                 }
                 else
                 {
-                    arr[key].add(inputArray[i]);
+                    arr[key].offer(inputArray[i]);
                 }
             }
 
-            for (int i = 0; i < arr.Length; i++)
+            var n = 0;
+            var k = 0;
+
+            while (n < inputArray.Length)
             {
-                inputArray[i] = arr[i].remove()
+                if (arr[k] != null)
+                {
+                    if (!arr[k].isEmpty())
+                    {
+                        inputArray[n] = arr[k].remove();
+                        n++;
+                        continue;
+                    }
+                }
+
+                k++;
             }
+            
+            return inputArray;
+        }
+
+        private static int[] radixSort(int[] inputArray, int digits)
+        {
+            var arr = new MyDynamicQueue<int>[inputArray.Length];
+            var digit = 1;
+
+            for (int i = 0; i < digits; i++)
+            {
+                for (int j = 0; j < inputArray.Length; j++)
+                {
+                    var t = inputArray[j] / digit;
+                    var key = t % 10;
+                    
+                    if (arr[key] == null)
+                    {
+                        arr[key] = new MyDynamicQueue<int>();
+                        arr[key].offer(inputArray[j]);
+                    }
+                    else
+                    {
+                        arr[key].offer(inputArray[j]);
+                    }
+                }
+                
+                var n = 0;
+                var k = 0;
+
+                while (n < inputArray.Length)
+                {
+                    if (arr[k] != null)
+                    {
+                        if (!arr[k].isEmpty())
+                        {
+                            inputArray[n] = arr[k].remove();
+                            n++;
+                            continue;
+                        }
+                    }
+
+                    k++;
+                }
+
+                digit *= 10;
+            }
+
             return inputArray;
         }
 
@@ -128,7 +196,7 @@ namespace Lab_13_14
                     Console.WriteLine("Введите число элементов в массиве:");
                     if (int.TryParse(Console.ReadLine(), out var n))
                     {
-                        array = randomArray(n);
+                        array = randomArray(n, 0, n);
                         Console.WriteLine("Массив создан");
                     }
                     else
@@ -143,16 +211,49 @@ namespace Lab_13_14
                         printArray(array);
                     }
                     break;
-                case "BUS":
+                case "SKIS":
                     if (array.Length > 0)
                     {
-                        int[] arrayCopy = new int[array.Length];
-                        Array.Copy(array, arrayCopy, array.Length);
-                        var result = bubbleSort(arrayCopy);
+                        var ar = arrayForPocketSort(array.Length);
+                        var result = sameKeysAndIndices(ar);
                         printArray(result);
                     }
                     break;
-                
+                case "TAS":
+                    if (array.Length > 0)
+                    {
+                        var ar = arrayForPocketSort(array.Length);
+                        var result = sameArray(ar);
+                        printArray(result);
+                    }
+                    break;
+                case "BS":
+                    if (array.Length > 0)
+                    {
+                        var copyArray = new int[array.Length];
+                        Array.Copy(array, copyArray, array.Length);
+                        var result = bucketSort(copyArray);
+                        printArray(result);
+                    }
+                    break;
+                case "RS":
+                    if (array.Length > 0)
+                    {
+                        var copyArray = new int[array.Length];
+                        Array.Copy(array, copyArray, array.Length);
+                        
+                        var maxNum = array.Length - 1;
+                        var countDigits = 0;
+                        while (maxNum > 0)
+                        {
+                            maxNum /= 10;
+                            countDigits++;
+                        }
+                        
+                        var result = radixSort(copyArray, countDigits);
+                        printArray(result);
+                    }
+                    break;
             }
         }
 

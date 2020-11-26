@@ -39,7 +39,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="DataStructure.cs" />
-        <Compile Include="MyDynamicList.cs" />
+        <Compile Include="MyDynamicQueue.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
