@@ -4,9 +4,8 @@ namespace Lab_16
 {
     internal class Program
     {
-        private static string[] keys = new[] {"begin;", "!end", "do", "start", "for", "else", "as", "var", "IF", "integer"};
         private static int tableLength;
-        private static string[] hashTable;
+        private static MyDynamicList<string>[] hashTable;
         private static long equalityCounter;
         private static long totalOperations;
         public static void Main(string[] args)
@@ -21,7 +20,7 @@ namespace Lab_16
                     if (length > 0)
                     {
                         tableLength = length;
-                        hashTable = new string[length];
+                        hashTable = new MyDynamicList<string>[length];
                         break;
                     }
                 }
@@ -33,6 +32,7 @@ namespace Lab_16
             Console.WriteLine("C  хэш-код слова");
             Console.WriteLine("P  вывести на экран");
             Console.WriteLine("TO  количество всех сравнений за время использования");
+            Console.WriteLine("R  удалить элемент хэш-таблицы");
             Console.WriteLine("EXT  выход");
 
             while (true)
@@ -64,59 +64,56 @@ namespace Lab_16
 
         private static bool putInTable(int hashCode, string el)
         {
-            equalityCounter = 0;
-            equalityCounter++;
-            if (string.IsNullOrEmpty(hashTable[hashCode]))
-            {
-                hashTable[hashCode] = el;
-                return true;
-            }
+            equalityCounter = 3;
 
-            for (int k = 1; k < tableLength; k++)
+            if (hashTable[hashCode] == null)
             {
-                var j = (hashCode + k) % tableLength;
-                
-                equalityCounter++;
-                if (string.IsNullOrEmpty(hashTable[j]))
-                {
-                    hashTable[j] = el;
-                    return true;
-                }
+                hashTable[hashCode] = new MyDynamicList<string>();
             }
             
-            return false;
+            return hashTable[hashCode].add(el);
         }
 
         private static void printTable()
         {
             for (int i = 0; i < hashTable.Length; i++)
             {
-                Console.Write($"[{i}]: {hashTable[i]}  ");
+                Console.Write($"[{i}]:  ");
+                if (hashTable[i] != null)
+                {
+                    hashTable[i].showState();
+                }
             }
             Console.WriteLine();
         }
 
         private static bool searchKey(string key)
         {
-            equalityCounter = 0;
             var hashSearch = hash(key);
-            equalityCounter++;
-            if (hashTable[hashSearch].Equals(key))
+            var item = hashTable[hashSearch].getItem(key);
+
+            equalityCounter = hashTable[hashSearch].getEqualityCounter();
+            
+            if (item != null)
             {
-                Console.WriteLine($"Элемент находится в {hashSearch} ячейке");
+                Console.WriteLine($"Элемент {item} находится в {hashSearch} ячейке");
                 return true;
             }
+
+            return false;
+        }
+
+        private static bool remove(string key)
+        {
+            var hashSearch = hash(key);
+            var item = hashTable[hashSearch].remove(key);
+
+            equalityCounter = hashTable[hashSearch].getEqualityCounter();
             
-            for (int k = 1; k < tableLength; k++)
+            if (item != null)
             {
-                var j = (hashSearch + k) % tableLength;
-            
-                equalityCounter++;
-                if (hashTable[j].Equals(key))
-                {
-                    Console.WriteLine($"Элемент находится в {j} ячейке");
-                    return true;
-                }
+                Console.WriteLine($"Удален элемент {item}, он находился в {hashSearch} ячейке");
+                return true;
             }
 
             return false;
@@ -138,7 +135,7 @@ namespace Lab_16
                                 totalOperations = 0;
                                 equalityCounter = 0;
                                 tableLength = length;
-                                hashTable = new string[length];
+                                hashTable = new MyDynamicList<string>[length];
                                 break;
                             }
                         }
@@ -183,6 +180,15 @@ namespace Lab_16
                     break;
                 case "TO":
                     Console.WriteLine("Все сравнения: " + totalOperations);
+                    break;
+                case "R":
+                    Console.WriteLine("Введите ключ:");
+                    if (!remove(Console.ReadLine()))
+                    {
+                        Console.WriteLine("Данный элемент отсутствует в хэш-таблице");
+                    }
+                    Console.WriteLine($"Кол-во сравнений: {equalityCounter}");
+                    totalOperations += equalityCounter;
                     break;
             }
         }
