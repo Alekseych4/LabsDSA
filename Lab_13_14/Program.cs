@@ -136,10 +136,41 @@ namespace Lab_13_14
         {
             moveCounter = 0;
             equalityCounter = 0;
+
+            int[] steps;
+            int stepsCount;
             
-            var steps = new int[] { 1, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535, 131071};
-            var stepsCount =  (int)Math.Log(inputArray.Length, 2) - 1;
-            Console.WriteLine(stepsCount);
+            Console.WriteLine("D or C?");
+            if (Console.ReadLine().Equals("C"))
+            {
+                Console.WriteLine("Введите кол-во шагов");
+                if (!int.TryParse(Console.ReadLine(), out stepsCount))
+                {
+                    Console.WriteLine("Ввод неверен, сортировка не произведена");
+                    return inputArray;
+                }
+                
+                steps = new int[stepsCount];
+                stepsCount--;
+                Console.WriteLine("Введите величины шагов в возрастающем порядке");
+                for (int i = 0; i < steps.Length; i++)
+                {
+                    if (!int.TryParse(Console.ReadLine(), out int s))
+                    {
+                        Console.WriteLine("Ввод неверен, сортировка не произведена");
+                        return inputArray;
+                    }
+
+                    steps[i] = s;
+                }
+            }
+            else
+            {
+                steps = new int[] { 1, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535, 131071};
+                stepsCount =  (int)Math.Log(inputArray.Length, 2) - 1;
+            }
+
+            //Console.WriteLine(stepsCount);
             
             for (int i = stepsCount; i >= 0; i--)
             {
