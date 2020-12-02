@@ -70,6 +70,16 @@ namespace Lab_16
             {
                 hashTable[hashCode] = new MyDynamicList<string>();
             }
+            else
+            {
+                if (!hashTable[hashCode].isEmpty())
+                {
+                    if (hashTable[hashCode].getItem(el) != null)
+                    {
+                        return false;
+                    }
+                }
+            }
             
             return hashTable[hashCode].add(el);
         }
@@ -89,11 +99,17 @@ namespace Lab_16
 
         private static bool searchKey(string key)
         {
-            var hashSearch = hash(key);
-            var item = hashTable[hashSearch].getItem(key);
-
-            equalityCounter = hashTable[hashSearch].getEqualityCounter();
+            equalityCounter = 0;
             
+            var hashSearch = hash(key);
+            string item = null;
+            equalityCounter++;
+            if (hashTable[hashSearch] != null)
+            {
+                item = hashTable[hashSearch].getItem(key);
+                equalityCounter = hashTable[hashSearch].getEqualityCounter();
+            }
+
             if (item != null)
             {
                 Console.WriteLine($"Элемент {item} находится в {hashSearch} ячейке");
@@ -105,11 +121,16 @@ namespace Lab_16
 
         private static bool remove(string key)
         {
+            equalityCounter = 0;
             var hashSearch = hash(key);
-            var item = hashTable[hashSearch].remove(key);
+            string item = null;
+            equalityCounter++;
+            if (hashTable[hashSearch] != null)
+            {
+                item = hashTable[hashSearch].remove(key);
+                equalityCounter = hashTable[hashSearch].getEqualityCounter();
+            }
 
-            equalityCounter = hashTable[hashSearch].getEqualityCounter();
-            
             if (item != null)
             {
                 Console.WriteLine($"Удален элемент {item}, он находился в {hashSearch} ячейке");
@@ -153,7 +174,7 @@ namespace Lab_16
                     }
                     else
                     {
-                        Console.WriteLine("Элемент не добавлен, таблица заполнена");
+                        Console.WriteLine("Элемент не добавлен, таблица заполнена или ключ уже существует");
                     }
                     
                     Console.WriteLine($"Кол-во сравнений: {equalityCounter}");
