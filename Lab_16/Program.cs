@@ -104,7 +104,7 @@ namespace Lab_16
             var hashSearch = hash(key);
             string item = null;
             equalityCounter++;
-            if (hashTable[hashSearch] != null)
+            if (hashTable[hashSearch] != null && !hashTable[hashSearch].isEmpty())
             {
                 item = hashTable[hashSearch].getItem(key);
                 equalityCounter = hashTable[hashSearch].getEqualityCounter();
@@ -125,7 +125,7 @@ namespace Lab_16
             var hashSearch = hash(key);
             string item = null;
             equalityCounter++;
-            if (hashTable[hashSearch] != null)
+            if (hashTable[hashSearch] != null && !hashTable[hashSearch].isEmpty())
             {
                 item = hashTable[hashSearch].remove(key);
                 equalityCounter = hashTable[hashSearch].getEqualityCounter();

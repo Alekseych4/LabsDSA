@@ -25,6 +25,8 @@ namespace Lab_16
             try
             {
                 var dataStructure = findItemByName(itemToRemove);
+                if (dataStructure == null) return default;
+                
                 var obj = dataStructure.Node;
 
                 if (dataStructure.Next != null)
@@ -38,6 +40,8 @@ namespace Lab_16
                     temp = head;
                     if (temp.Node == null)
                     {
+                        head = null;
+                        temp = head;
                         tail = head;
                         return obj;
                     }
