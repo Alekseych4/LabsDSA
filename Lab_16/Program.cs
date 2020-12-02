@@ -72,6 +72,12 @@ namespace Lab_16
                 return true;
             }
 
+            equalityCounter++;
+            if (hashTable[hashCode].Equals(el))
+            {
+                return false;
+            }
+
             for (int k = 1; k < tableLength; k++)
             {
                 var j = (hashCode + k) % tableLength;
@@ -81,6 +87,11 @@ namespace Lab_16
                 {
                     hashTable[j] = el;
                     return true;
+                }
+                else if (hashTable[hashCode].Equals(el))
+                {
+                    equalityCounter++;
+                    return false;
                 }
             }
             
@@ -112,7 +123,7 @@ namespace Lab_16
                 var j = (hashSearch + k) % tableLength;
             
                 equalityCounter++;
-                if (hashTable[j].Equals(key))
+                if (hashTable[j] != null && hashTable[j].Equals(key))
                 {
                     Console.WriteLine($"Элемент находится в {j} ячейке");
                     return true;
@@ -156,7 +167,7 @@ namespace Lab_16
                     }
                     else
                     {
-                        Console.WriteLine("Элемент не добавлен, таблица заполнена");
+                        Console.WriteLine("Элемент не добавлен, таблица заполнена или такой ключ уже существует");
                     }
                     
                     Console.WriteLine($"Кол-во сравнений: {equalityCounter}");
