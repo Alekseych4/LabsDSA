@@ -112,7 +112,7 @@ namespace Lab_16
             equalityCounter = 0;
             var hashSearch = hash(key);
             equalityCounter++;
-            if (hashTable[hashSearch].Equals(key))
+            if (hashTable[hashSearch] != null && hashTable[hashSearch].Equals(key))
             {
                 Console.WriteLine($"Элемент находится в {hashSearch} ячейке");
                 return true;
