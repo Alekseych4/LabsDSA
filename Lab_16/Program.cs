@@ -64,7 +64,7 @@ namespace Lab_16
 
         private static bool putInTable(int hashCode, string el)
         {
-            equalityCounter = 3;
+            equalityCounter = 1;
 
             if (hashTable[hashCode] == null)
             {
@@ -72,8 +72,10 @@ namespace Lab_16
             }
             else
             {
+                equalityCounter++;
                 if (!hashTable[hashCode].isEmpty())
                 {
+                    equalityCounter++;
                     if (hashTable[hashCode].getItem(el) != null)
                     {
                         return false;
@@ -156,6 +158,7 @@ namespace Lab_16
                                 totalOperations = 0;
                                 equalityCounter = 0;
                                 tableLength = length;
+                                Array.Clear(hashTable, 0, hashTable.Length);
                                 hashTable = new MyDynamicList<string>[length];
                                 break;
                             }
