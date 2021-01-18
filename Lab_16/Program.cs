@@ -4,11 +4,11 @@ namespace Lab_16
 {
     internal class Program
     {
-        private static string[] keys = new[] {"begin;", "!end", "do", "start", "for", "else", "as", "var", "IF", "integer"};
         private static int tableLength;
         private static string[] hashTable;
         private static long equalityCounter;
         private static long totalOperations;
+        private static int inserted = 0;
         public static void Main(string[] args)
         {
             do
@@ -32,6 +32,7 @@ namespace Lab_16
             Console.WriteLine("F  поиск элемента в хэш-таблице");
             Console.WriteLine("C  хэш-код слова");
             Console.WriteLine("P  вывести на экран");
+            Console.WriteLine("I  добавлено элементов");
             Console.WriteLine("TO  количество всех сравнений за время использования");
             Console.WriteLine("EXT  выход");
 
@@ -88,7 +89,7 @@ namespace Lab_16
                     hashTable[j] = el;
                     return true;
                 }
-                else if (hashTable[hashCode].Equals(el))
+                else if (hashTable[j].Equals(el))
                 {
                     equalityCounter++;
                     return false;
@@ -149,7 +150,9 @@ namespace Lab_16
                                 totalOperations = 0;
                                 equalityCounter = 0;
                                 tableLength = length;
+                                Array.Clear(hashTable, 0, hashTable.Length);
                                 hashTable = new string[length];
+                                inserted = 0;
                                 break;
                             }
                         }
@@ -164,6 +167,7 @@ namespace Lab_16
                     {
                         Console.WriteLine("Элемент успешно добавлен");
                         totalOperations += equalityCounter;
+                        inserted++;
                     }
                     else
                     {
@@ -183,6 +187,9 @@ namespace Lab_16
                     
                     Console.WriteLine($"Кол-во сравнений: {equalityCounter}");
                     totalOperations += equalityCounter;
+                    break;
+                case "I":
+                    Console.WriteLine($"Вставлено элементов: {inserted}");
                     break;
                 case "C":
                     var input = Console.ReadLine();
