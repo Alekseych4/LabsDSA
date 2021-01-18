@@ -113,7 +113,13 @@ namespace Lab_16
             equalityCounter = 0;
             var hashSearch = hash(key);
             equalityCounter++;
-            if (hashTable[hashSearch] != null && hashTable[hashSearch].Equals(key))
+            if (string.IsNullOrEmpty(hashTable[hashSearch]))
+            {
+                return false;
+            }
+
+            equalityCounter++;
+            if (hashTable[hashSearch].Equals(key))
             {
                 Console.WriteLine($"Элемент находится в {hashSearch} ячейке");
                 return true;
@@ -124,7 +130,13 @@ namespace Lab_16
                 var j = (hashSearch + k) % tableLength;
             
                 equalityCounter++;
-                if (hashTable[j] != null && hashTable[j].Equals(key))
+                if (string.IsNullOrEmpty(hashTable[j]))
+                {
+                    break;
+                }
+
+                equalityCounter++;
+                if (hashTable[j].Equals(key))
                 {
                     Console.WriteLine($"Элемент находится в {j} ячейке");
                     return true;
